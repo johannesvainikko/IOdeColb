@@ -6,7 +6,7 @@
 using namespace cv;
 
 
-int mainalt() {
+int main() {
 	namedWindow("video", 1);
 	namedWindow("Original", 1);
 	
