@@ -2,13 +2,15 @@
 #define pildiT66tlus
 
 #include "pall.h"
+//pildi kõrgus/laius /2'ga
+void keskpunkt();
 
 /*sisse BGR vahemik, välja kontuuride massiiv*/
-std::vector<std::vector <cv::Point>> kontuurid(int lowB, int lowG, int lowR, int upB, int upG, int upR, int ksize, int kdev);
+void kontuurid();
 
 //sisse kontuurid, välja pallide vektor
-std::vector<Pall> palliSort(std::vector<std::vector <cv::Point>> contours);
+void palliSort();
 
 //värvide ja muude paikapanekuks
-int parameetrid();
+void parameetrid();
 #endif 
