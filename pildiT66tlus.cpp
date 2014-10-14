@@ -1,26 +1,26 @@
 #include "pildiT66tlus.h"
 
-std::vector<std::vector <cv::Point>> kontuurid(int lowB, int lowG, int lowR, int upB, int upG, int upR, int ksize, int kdev) {
-    cv::VideoCapture cap(0);
+std::vector<std::vector <cv::Point>> kontuurid() {
     cv::Mat frame;
     cv::Mat elemDilate = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3));
     cv::Mat elemErode = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9,9));
     std::vector<std::vector <cv::Point>> contours;
     cv::Vector<cv::Vec4i> hierarchy;
+    //cv::VideoCapture cap(0);
     
     try {
-        cap >> frame;
+        g_cap >> frame;
         //frame = cv::imread("/Users/reti/Dropbox/katsepilt.png"); testimiseks, don't mind this
-        cv::GaussianBlur(frame, frame, cv::Size(ksize,ksize), kdev);
-        cv::inRange(frame, cv::Scalar(lowB,lowG,lowR), cv::Scalar(upB,upG,upR), frame);
+        cv::GaussianBlur(frame, frame, cv::Size(g_ksize,g_ksize), g_kdev);
+        cv::inRange(frame, cv::Scalar(g_lowB,g_lowG,g_lowR), cv::Scalar(g_upB,g_upG,g_upR), frame);
         cv::dilate(frame,frame,elemDilate);
         cv::erode(frame, frame,elemErode);
         cv::findContours(frame, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-        }
+    }
     catch (cv::Exception& e) {
         const char* err_msg = e.what();
         std::cout << err_msg << std::endl;
-        }
+    }
     return contours;
 }
 
@@ -38,54 +38,50 @@ std::vector<Pall> palliSort(std::vector<std::vector <cv::Point>> contours){
             pallid.push_back(Pall(suurus, x, y));
         }
     }
-
+    
     return pallid;
 }
 
-int parameetrid() {
+void parameetrid() {
     cv::namedWindow("video", 1);
     cv::namedWindow("original", 1);
-    cv::VideoCapture cap(0);
+    //cv::VideoCapture cap(0);
     cv::Mat frame, binary;
-    
-    int lowerB, lowerG, lowerR, upperB, upperG, upperR = 0;
-    
-    int ksize=11;
-    int kdev=4;
     
     cv::Mat elemDilate = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3));
     cv::Mat elemErode = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9,9));
     
-    lowerB = cv::createTrackbar("Lower B", "video", &lowerB, 255);
-    upperB = cv::createTrackbar("Upper B", "video", &upperB, 255);
-    lowerG = cv::createTrackbar("Lower G", "video", &lowerG, 255);
-    upperG = cv::createTrackbar("Upper G", "video", &upperG, 255);
-    lowerR = cv::createTrackbar("Lower R", "video", &lowerR, 255);
-    upperR = cv::createTrackbar("Upper R", "video", &upperR, 255);
+    cv::createTrackbar("Lower B", "video", &g_lowB, 255);
+    cv::createTrackbar("Upper B", "video", &g_upB, 255);
+    cv::createTrackbar("Lower G", "video", &g_lowG, 255);
+    cv::createTrackbar("Upper G", "video", &g_upG, 255);
+    cv::createTrackbar("Lower R", "video", &g_lowR, 255);
+    cv::createTrackbar("Upper R", "video", &g_upR, 255);
     
     /*cv::createTrackbar("Kernel size", "video", &ksize, 10);
-    cv::createTrackbar("Kernel dev", "video", &kdev, 10);
-    if (ksize % 2 == 0) {
-        ksize++;
-    }
-    */
+     cv::createTrackbar("Kernel dev", "video", &kdev, 10);
+     if (ksize % 2 == 0) {
+     ksize++;
+     }
+     */
     
     while (true) {
-        cap >> frame;
+        g_cap >> frame;
         imshow("original", frame);
-        cv::GaussianBlur(frame, frame, cv::Size(ksize,ksize), kdev);
-        cv::inRange(frame, cv::Scalar(lowerB, lowerG, lowerR), cv::Scalar(upperB, upperG, upperR), binary);
+        cv::GaussianBlur(frame, frame, cv::Size(g_ksize,g_ksize), g_kdev);
+        cv::inRange(frame, cv::Scalar(g_lowB, g_lowG, g_lowR), cv::Scalar(g_upB, g_upG, g_upR), binary);
         cv::dilate(binary,binary,elemDilate);
         cv::erode(binary, binary,elemErode);
         imshow("video", binary);
         
         
         if(cv::waitKey(1) >= 0){
-            cv::destroyAllWindows();
+            cv::destroyWindow("original");
+            cv::destroyWindow("video");
             break;
-            }
+        }
     }
-    return lowerB,lowerG,lowerR,upperB,upperG,upperR,ksize,kdev;
+    return;
 }
 
 

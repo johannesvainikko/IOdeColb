@@ -1,10 +1,8 @@
 #ifndef pall
 #define pall
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <opencv2/opencv.hpp>
 #include <iostream>
+#include <opencv2/opencv.hpp>
 
 class Pall{
     
@@ -20,3 +18,4 @@ extern std::vector<Pall> palliV;
 
 
 #endif
+
