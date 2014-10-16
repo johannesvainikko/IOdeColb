@@ -3,11 +3,8 @@
 #include "globals.h"
 
 int main(int argC, char *argV[]){
-    cv::namedWindow("test", 1);
     bool isPall;
     int suurimI;
-    std::string punktS;
-    cv::Point punkt;
     cv::Mat frame;
     std::vector<std::vector <cv::Point>> contours;
     std::vector<Pall> pallid;
@@ -21,6 +18,9 @@ int main(int argC, char *argV[]){
     
     if (argC>1){
         if (strcmp(argV[1], "-computer")==0) {
+            cv::namedWindow("test", 1);
+            std::string punktS;
+            cv::Point punkt;
             while(true){
                 contours = kontuurid();
                 pallid = palliSort(contours);
@@ -39,8 +39,14 @@ int main(int argC, char *argV[]){
                     cv::line(frame, cv::Point(g_width+g_dev,0), cv::Point(g_width+g_dev,g_height), cv::Scalar(0,0,255));
                     if((g_width-g_dev)<(pallid[suurimI].x)){
                         if ((pallid[suurimI].x)<(g_width+g_dev)) {
-                            std::cout << "move" << std::endl;
+                            std::cout << "otse" << std::endl;
                         }
+                        else{
+                            std::cout << "vasak" << std::endl;
+                        }
+                    }
+                    else{
+                        std::cout << "parem" << std::endl;
                     }
                 }
                 cv::imshow("test", frame);
@@ -63,6 +69,12 @@ int main(int argC, char *argV[]){
                     if ((pallid[suurimI].x)<(g_width+g_dev)) {
                         //otse liikumine pls
                     }
+                    else{
+                        //p66ra vasakule
+                    }
+                }
+                else{
+                    //p66ra paremale
                 }
             }
         }
