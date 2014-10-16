@@ -14,8 +14,10 @@ public:
     friend std::ostream& operator<<(std::ostream& out, const Pall& p);
 };
 
-extern std::vector<Pall> palliV;
+bool onPall(std::vector<Pall> palliV);
 
+//asukoht vektoris
+int suurim(std::vector<Pall> palliV);
 
 #endif
 

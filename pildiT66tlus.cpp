@@ -2,8 +2,6 @@
 
 std::vector<std::vector <cv::Point>> kontuurid() {
     cv::Mat frame;
-    cv::Mat elemDilate = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3));
-    cv::Mat elemErode = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9,9));
     std::vector<std::vector <cv::Point>> contours;
     cv::Vector<cv::Vec4i> hierarchy;
     //cv::VideoCapture cap(0);
@@ -13,8 +11,8 @@ std::vector<std::vector <cv::Point>> kontuurid() {
         //frame = cv::imread("/Users/reti/Dropbox/katsepilt.png"); testimiseks, don't mind this
         cv::GaussianBlur(frame, frame, cv::Size(g_ksize,g_ksize), g_kdev);
         cv::inRange(frame, cv::Scalar(g_lowB,g_lowG,g_lowR), cv::Scalar(g_upB,g_upG,g_upR), frame);
-        cv::dilate(frame,frame,elemDilate);
-        cv::erode(frame, frame,elemErode);
+        cv::dilate(frame,frame,g_elemDilate);
+        cv::erode(frame, frame,g_elemErode);
         cv::findContours(frame, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
     }
     catch (cv::Exception& e) {
@@ -48,9 +46,6 @@ void parameetrid() {
     //cv::VideoCapture cap(0);
     cv::Mat frame, binary;
     
-    cv::Mat elemDilate = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3));
-    cv::Mat elemErode = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9,9));
-    
     cv::createTrackbar("Lower B", "video", &g_lowB, 255);
     cv::createTrackbar("Upper B", "video", &g_upB, 255);
     cv::createTrackbar("Lower G", "video", &g_lowG, 255);
@@ -58,20 +53,13 @@ void parameetrid() {
     cv::createTrackbar("Lower R", "video", &g_lowR, 255);
     cv::createTrackbar("Upper R", "video", &g_upR, 255);
     
-    /*cv::createTrackbar("Kernel size", "video", &ksize, 10);
-     cv::createTrackbar("Kernel dev", "video", &kdev, 10);
-     if (ksize % 2 == 0) {
-     ksize++;
-     }
-     */
-    
     while (true) {
         g_cap >> frame;
         imshow("original", frame);
         cv::GaussianBlur(frame, frame, cv::Size(g_ksize,g_ksize), g_kdev);
         cv::inRange(frame, cv::Scalar(g_lowB, g_lowG, g_lowR), cv::Scalar(g_upB, g_upG, g_upR), binary);
-        cv::dilate(binary,binary,elemDilate);
-        cv::erode(binary, binary,elemErode);
+        cv::dilate(binary,binary,g_elemDilate);
+        cv::erode(binary, binary,g_elemErode);
         imshow("video", binary);
         
         
