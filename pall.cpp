@@ -1,9 +1,9 @@
 #include "pall.h"
 
 Pall::Pall(int nsuurus, int nx, int ny)
-:suurus{nsuurus},
-x{nx},
-y{ny}
+:suurus(nsuurus),
+x(nx),
+y(ny)
 {
 }
 

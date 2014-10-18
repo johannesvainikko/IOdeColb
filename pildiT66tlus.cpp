@@ -1,8 +1,8 @@
 #include "pildiT66tlus.h"
 
-std::vector<std::vector <cv::Point>> kontuurid() {
+std::vector<std::vector <cv::Point> > kontuurid() {
     cv::Mat frame;
-    std::vector<std::vector <cv::Point>> contours;
+    std::vector<std::vector <cv::Point> > contours;
     cv::Vector<cv::Vec4i> hierarchy;
     //cv::VideoCapture cap(0);
     
@@ -22,7 +22,7 @@ std::vector<std::vector <cv::Point>> kontuurid() {
     return contours;
 }
 
-std::vector<Pall> palliSort(std::vector<std::vector <cv::Point>> contours){
+std::vector<Pall> palliSort(std::vector<std::vector <cv::Point> > contours){
     std::vector<Pall> pallid;
     std::vector<cv::Moments> mu(contours.size());
     int suurus,x,y;

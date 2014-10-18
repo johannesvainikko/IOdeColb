@@ -6,7 +6,7 @@ int main(int argC, char *argV[]){
     bool isPall;
     int suurimI;
     cv::Mat frame;
-    std::vector<std::vector <cv::Point>> contours;
+    std::vector<std::vector <cv::Point> > contours;
     std::vector<Pall> pallid;
     g_ksize=11;
     g_kdev=4;
