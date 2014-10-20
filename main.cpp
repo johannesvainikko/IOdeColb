@@ -1,8 +1,13 @@
 #include "pildiT66tlus.h"
 #include "pall.h"
 #include "globals.h"
+#include "RobotManager.hpp"
 
 int main(int argC, char *argV[]){
+	
+	RobotManager manager;
+    manager.initSerial();
+	
     bool isPall;
     int suurimI;
     cv::Mat frame;
@@ -67,14 +72,17 @@ int main(int argC, char *argV[]){
                 suurimI=suurim(pallid);
                 if((g_width-g_dev)<(pallid[suurimI].x)){
                     if ((pallid[suurimI].x)<(g_width+g_dev)) {
-                        //otse liikumine pls
+                        //move straight
+                        manager.moveRobot(0, 20, 0);
                     }
                     else{
-                        //p66ra vasakule
+                        //turn left
+                        manager.moveRobot(0, 0, -10);
                     }
                 }
                 else{
-                    //p66ra paremale
+                    //turn right
+                    manager.moveRobot(0, 0, 10);
                 }
             }
         }
