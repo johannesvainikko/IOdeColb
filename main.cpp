@@ -6,7 +6,7 @@
 int main(int argC, char *argV[]){
 	
 	RobotManager manager;
-    manager.initSerial();
+    
 	
     bool isPall;
     int suurimI;
@@ -63,6 +63,7 @@ int main(int argC, char *argV[]){
     }
     
     else{
+		manager.initSerial();
         while(true){
             contours = kontuurid();
             pallid = palliSort(contours);
@@ -72,8 +73,17 @@ int main(int argC, char *argV[]){
                 suurimI=suurim(pallid);
                 if((g_width-g_dev)<(pallid[suurimI].x)){
                     if ((pallid[suurimI].x)<(g_width+g_dev)) {
-                        //move straight
-                        manager.moveRobot(0, 20, 0);
+                        
+                        if (pallid[suurimI].y > 450) {
+							// stop, ball found
+							manager.moveRobot(0, 0, 0);
+							break;
+						}
+						else {
+							//move straight
+							manager.moveRobot(0, 20, 0);
+						}
+                        
                     }
                     else{
                         //turn left
@@ -85,6 +95,9 @@ int main(int argC, char *argV[]){
                     manager.moveRobot(0, 0, 10);
                 }
             }
+            else {
+				manager.moveRobot(0, 0, -10);
+			}
         }
     }
     return 0;
