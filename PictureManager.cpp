@@ -4,7 +4,7 @@ void PictureManager::init(int f){
     cap.open(0);
     cap >> frame;
     cv::Size su = frame.size();
-    widthImg = su.width;
+    widthImg = (su.width)/2;
     heightImg = su.height;
     elemDilate = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3));
     elemErode = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9,9));
@@ -19,25 +19,28 @@ void PictureManager::refresh(int f){
     contourFinder(f);
     objectSort(f);
     isObjectF(f);
-    clear();
+    largest(f);
+    clear(f);
 }
 
-void PictureManager::clear(){
-    pallid.clear();
-    goal.clear();
+void PictureManager::clear(int f){
+    if (f==GOAL) goal.clear();
+    else pallid.clear();
 }
 
 void PictureManager::where(int f){
-    largest(f);
     Object largestObject(0,0,0);
+    int dev;
     if (f==BALL) {
         largestObject=largestB;
+        dev=DEV;
     }
     else {
+        dev=(largestG.rect.width)/2;
         largestObject=largestG;
     }
-    if((widthImg-DEV)<(largestObject.x)){
-        if ((largestObject.x)<(widthImg+DEV)) {
+    if((widthImg-dev)<(largestObject.x)){
+        if ((largestObject.x)<(widthImg+dev)) {
             if (largestObject.y > 450) {
                 // stop, ball found
                 dir=STOP;
@@ -242,14 +245,34 @@ void PictureManager::objectSort(int f){
     }
     std::vector<cv::Moments> mu((*contours).size());
     int suurus,x,y;
-    
-    for (int i=0; i<(*contours).size(); i++) {
-        mu[i]=cv::moments((*contours)[i],false);
-        suurus=mu[i].m00;
-        if(suurus>50){
-            x=mu[i].m10/mu[i].m00;
-            y=mu[i].m01/mu[i].m00;
-            (*objects).push_back(Object(suurus, x, y));
+    if (f==GOAL) {
+        int loc = 0;
+        int oldSize = 0;
+        for (int i=0; i<(*contours).size(); i++) {
+            mu[i]=cv::moments((*contours)[i],false);
+            suurus=mu[i].m00;
+            if (suurus>oldSize) {
+                loc=i;
+                oldSize=suurus;
+            }
+        }
+        x=mu[loc].m10/mu[loc].m00;
+        y=mu[loc].m01/mu[loc].m00;
+        std::vector<std::vector<cv::Point> > poly;
+        cv::Rect exPoints;
+        cv::approxPolyDP(cv::Mat((*contours)[loc]), poly, 3, true);
+        exPoints = cv::boundingRect(poly);
+        (*objects).push_back(Object(oldSize, x, y, exPoints));
+    }
+    else{
+        for (int i=0; i<(*contours).size(); i++) {
+            mu[i]=cv::moments((*contours)[i],false);
+            suurus=mu[i].m00;
+            if(suurus>50){
+                x=mu[i].m10/mu[i].m00;
+                y=mu[i].m01/mu[i].m00;
+                (*objects).push_back(Object(suurus, x, y));
+            }
         }
     }
 }
@@ -291,6 +314,7 @@ void PictureManager::largest(int f){
     (*largestObject)=(*objects)[loc];
    
 }
+
 
 
 

@@ -54,7 +54,7 @@ private:
     void objectSort(int f);
     void largest(int f);
     void isObjectF(int f);
-    void clear();
+    void clear(int f);
     
 public:
     PictureManager(){};

@@ -10,6 +10,8 @@ public:
     int suurus;
     int x;
     int y;
+    cv::Rect rect;
+    Object(int nsuurus, int nx, int ny, cv::Rect nrect);
     Object(int nsuurus, int nx, int ny);
     Object(){};
     friend std::ostream& operator<<(std::ostream& out, const Object& p);
