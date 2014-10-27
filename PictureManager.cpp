@@ -229,7 +229,7 @@ void PictureManager::contourFinder(int f) {
     cv::inRange(frame, cv::Scalar(*lowH,*lowS,*lowV), cv::Scalar(*upH,*upS,*upV), frame);
     cv::dilate(frame,frame,elemDilate);
     cv::erode(frame, frame,elemErode);
-    cv::findContours(frame, *contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+    cv::findContours(frame, (*contours), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 }
 
 void PictureManager::objectSort(int f){
@@ -268,7 +268,7 @@ void PictureManager::objectSort(int f){
         for (int i=0; i<(*contours).size(); i++) {
             mu[i]=cv::moments((*contours)[i],false);
             suurus=mu[i].m00;
-            if(suurus>50){
+            if(suurus>10){
                 x=mu[i].m10/mu[i].m00;
                 y=mu[i].m01/mu[i].m00;
                 (*objects).push_back(Object(suurus, x, y));
@@ -293,7 +293,6 @@ void PictureManager::isObjectF(int f){
 }
 
 void PictureManager::largest(int f){
-    int loc = 0;
     Object * largestObject;
     std::vector<Object> * objects;
     if (f==GOAL) {
@@ -308,11 +307,9 @@ void PictureManager::largest(int f){
     for (int i=0; i<(*objects).size(); i++) {
         if ((*objects)[i].suurus>tyhi.suurus) {
             tyhi=(*objects)[i];
-            loc=i;
         }
     }
-    (*largestObject)=(*objects)[loc];
-   
+    (*largestObject)=tyhi;
 }
 
 
