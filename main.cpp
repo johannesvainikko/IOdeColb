@@ -4,9 +4,10 @@
 
 int main(int argC, char *argV[]){
     bool skip=false;
+    int target = BALL;
 	RobotManager manager;
     PictureManager camera;
-    camera.init(BLUE);
+    camera.init(YELLOW);
     
     if (argC>1){
         if (strcmp(argV[1], "-computer")==0) {
@@ -16,9 +17,9 @@ int main(int argC, char *argV[]){
     
     if (!skip) manager.initSerial();
     while(true){
-        camera.refresh(BALL);
+        camera.refresh(target);
         if (camera.isPall) {
-            camera.where(BALL);
+            camera.where(target);
             switch (camera.dir) {
                 case FORWARD:
                     if (!skip) manager.moveRobot(0, 20, 0);
@@ -34,7 +35,9 @@ int main(int argC, char *argV[]){
                     break;
                 case STOP:
                     if (!skip) manager.moveRobot(0, 0, 0);
-                    else std::cout << "no movement" << std::endl;
+                    else std::cout << "no movement" << target << std::endl;
+                    if (target==BALL) target=GOAL;
+                    else target=BALL;
                     break; //ajutine loop värava jaoks? :D that is if this even works harhar
                     
             }
