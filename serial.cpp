@@ -36,7 +36,7 @@ void mySleep(int sleepMs)
 
 
 int* scanPorts() {
-	static int ports[3];
+	static int ports[4];
     for (int i=24;i<27;i++) {
         int k =-1;
         do {
@@ -55,8 +55,9 @@ int* scanPorts() {
             if (k<=2 && k>=0){
                 ports[k]=i;
             }
-
-
+            if (k == 255) {
+				ports[3] = k;
+			}
 
             
 
@@ -68,6 +69,7 @@ int* scanPorts() {
     RS232_OpenComport(ports[0], 115200);
     RS232_OpenComport(ports[1], 115200);
     RS232_OpenComport(ports[2], 115200);
+    RS232_OpenComport(ports[3], 115200);
     
     return ports;
 }
@@ -148,4 +150,50 @@ void setSpeedForEng(int eng, int speed) {
 	 sendAsString(motorString,eng);
 	 motorStream.str("");
 }
+
+
+
+void cCoil(int port){
+    //const char * in = "c\n";
+    //unsigned char * in2;
+    //in2 = (unsigned char *) in;
+    //RS232_SendBuf(port, in2, 2);
+    
+    stringstream cStream;
+	string cString;
+	 cStream << "c" << endl;
+	 cString = cStream.str();
+	 sendAsString(cString, port);
+	 cStream.str("");
+}
+
+void pCoil(int port){
+    //const char * in = "p\n";
+    //unsigned char * in2;
+    //in2 = (unsigned char *) in;
+    //RS232_SendBuf(coil[0], in2, 2);
+    
+    stringstream cStream;
+	string cString;
+	 cStream << "p" << endl;
+	 cString = cStream.str();
+	 sendAsString(cString, port);
+	 cStream.str("");
+}
+
+void sCoil(int port){
+    //const char * in = "k5000\n";
+    //unsigned char * in2;
+    //in2 = (unsigned char *) in;
+    //RS232_SendBuf(port, in2, 6);
+    
+    
+    stringstream cStream;
+	string cString;
+	 cStream << "k5000" << endl;
+	 cString = cStream.str();
+	 sendAsString(cString, port);
+	 cStream.str("");
+}
+
 

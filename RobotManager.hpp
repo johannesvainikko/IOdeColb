@@ -10,13 +10,15 @@ class RobotManager {
 	
 	private:
 	int engines[3];
-	
+	int coilPort;
 	
 	public:
 	
 	void initSerial();
 	void moveRobot(float angle, float speed, int rotSpeed);
 	void turnRobot(int spd);
+	void shootCoil();
+	
 	~RobotManager();
 };
 
