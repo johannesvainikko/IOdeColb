@@ -23,8 +23,11 @@ int main(int argC, char *argV[]){
     
     if (!skip) manager.initSerial();
     
-    bool run = true;
-    while(run){
+    int runs = 2;
+    
+    while (runs > 0){
+		bool search = true;
+    while(search){
         camera.refresh(target);
         if (camera.isPall) {
             camera.where(target);
@@ -58,7 +61,7 @@ int main(int argC, char *argV[]){
 					case FORWARD:
 						if (!skip) manager.moveRobot(0, 20, 0);
 						else std::cout << "shoot, goal forward" << std::endl;
-						run = false;
+						search = false;
 						break;
 					case LEFT:
 						if (!skip) manager.moveRobot(90, 10, -11);
@@ -76,7 +79,7 @@ int main(int argC, char *argV[]){
 						else std::cout << "goal close enough, shoot" << target << std::endl;
 						if (target==BALL) target=GOAL;
 						else target=BALL;
-						run = false;
+						search = false;
 						break;
 					}
             }
@@ -86,5 +89,10 @@ int main(int argC, char *argV[]){
             else std::cout << "left/search" << std::endl;
         }
     }
+    runs = runs-1;
+	}
+    
+    
+    
     return 0;
 }
