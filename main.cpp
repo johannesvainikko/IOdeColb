@@ -23,7 +23,10 @@ int main(int argC, char *argV[]){
     
     if (!skip) manager.initSerial();
     
-    int runs = 2;
+    int timeout = 0;
+    
+    
+    int runs = 3;
     
     while (runs > 0){
 		bool search = true;
@@ -38,14 +41,17 @@ int main(int argC, char *argV[]){
 						else std::cout << "forward" << std::endl;
 						break;
 					case LEFT:
+						timeout = 0;
 						if (!skip) manager.moveRobot(0, 0, -10);
 						else std::cout << "left" << std::endl;
 						break;
 					case RIGHT:
+						timeout = 0;
 						if (!skip) manager.moveRobot(0, 0, 10);
 						else std::cout << "right" << std::endl;
 						break;
 					case STOP:
+					timeout = 0;
 						if (!skip) {
 							manager.moveRobot(0, 10, 0);
 							usleep(500000);
@@ -59,19 +65,22 @@ int main(int argC, char *argV[]){
             else {		//goal search
 				switch (camera.dir) {
 					case FORWARD:
-						if (!skip) manager.moveRobot(0, 20, 0);
+						if (!skip) manager.moveRobot(0, 0, 0);
 						else std::cout << "shoot, goal forward" << std::endl;
 						search = false;
 						break;
 					case LEFT:
+						timeout = 0;
 						if (!skip) manager.moveRobot(90, 10, -11);
 						else std::cout << "left with ball" << std::endl;
 						break;
 					case RIGHT:
+						timeout = 0;
 						if (!skip) manager.moveRobot(270, 10, 11);
 						else std::cout << "right with ball" << std::endl;
 						break;
 					case STOP:
+						timeout = 0;
 						if (!skip) {
 							manager.moveRobot(0, 0, 0);
 							manager.shootCoil();
@@ -85,8 +94,16 @@ int main(int argC, char *argV[]){
             }
         }
         else{
-            if (!skip) manager.moveRobot(0, 0, -10);
-            else std::cout << "left/search" << std::endl;
+			if (timeout < 500) {
+				timeout = timeout+1;
+				if (!skip) manager.moveRobot(0, 0, -10);
+				else std::cout << "left/search" << std::endl;
+			} else {
+				runs = 0;
+				search = 0;
+				timeout = 0;
+			}
+            
         }
     }
     runs = runs-1;
