@@ -14,7 +14,12 @@ int main(int argC, char *argV[]){
         if (strcmp(argV[1], "-computer")==0) {
             skip=true;
         }
-    }
+        if (strcmp(argV[1], "-BLUE")==0) {
+            camera.init(BLUE);
+        }
+    } else {
+		camera.init(YELLOW);
+	}
     
     if (!skip) manager.initSerial();
     

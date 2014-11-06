@@ -47,8 +47,9 @@ RobotManager::~RobotManager()
 }
 
 void RobotManager::shootCoil() {
-	cCoil(coilPort);
-	usleep(200000);
+	
+	//cCoil(coilPort);
+	//usleep(200000);
 	sCoil(coilPort);
 }
 

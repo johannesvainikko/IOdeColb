@@ -188,12 +188,20 @@ void sCoil(int port){
     //RS232_SendBuf(port, in2, 6);
     
     
-    stringstream cStream;
-	string cString;
-	 cStream << "k5000" << endl;
-	 cString = cStream.str();
-	 sendAsString(cString, port);
-	 cStream.str("");
+    //stringstream cStream;
+	//string cString;
+	 //cStream << "k5000" << endl;
+	 //cString = cStream.str();
+	 //sendAsString(cString, port);
+	 //cStream.str("");
+	 
+	 
+	 sendAsString( "fs0", port);
+	 sendAsString( "c", port);
+	 usleep(500000);
+	 sendAsString( "k3000", port);
+	 usleep(100000);
+	 sendAsString( "fs1", port);
 }
 
 

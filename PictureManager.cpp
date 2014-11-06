@@ -1,4 +1,5 @@
 #include "PictureManager.hpp"
+#include <string>
 
 void PictureManager::init(int f){
     cap.open(0);
@@ -153,6 +154,8 @@ void PictureManager::parameetrid(int f) {
     int * upH;
     int * upS;
     int * upV;
+    
+    std::string vName;
     if (f==GOAL) {
         lowH=&lowH_G;
         lowS=&lowS_G;
@@ -160,6 +163,7 @@ void PictureManager::parameetrid(int f) {
         upH=&upH_G;
         upS=&upS_G;
         upV=&upV_G;
+        vName = "goal";
     }
     else{
         lowH=&lowH_B;
@@ -168,9 +172,10 @@ void PictureManager::parameetrid(int f) {
         upH=&upH_B;
         upS=&upS_B;
         upV=&upV_B;
+        vName = "ball";
     }
     cv::namedWindow("video", 1);
-    cv::namedWindow("original", 1);
+    cv::namedWindow(vName, 1);
     cv::Mat binary;
     
     cv::createTrackbar("LowH", "video", lowH, 255);
@@ -182,7 +187,7 @@ void PictureManager::parameetrid(int f) {
     
     while (true) {
         cap >> frame;
-        imshow("original", frame);
+        imshow(vName, frame);
         cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
         cv::inRange(frame, cv::Scalar(*lowH, *lowS, *lowV), cv::Scalar(*upH, *upS, *upV), binary);
         cv::dilate(binary,binary,elemDilate);
@@ -190,7 +195,7 @@ void PictureManager::parameetrid(int f) {
         imshow("video", binary);
         
         if(cv::waitKey(1) >= 0){
-            cv::destroyWindow("original");
+            cv::destroyWindow(vName);
             cv::destroyWindow("video");
             break;
         }
