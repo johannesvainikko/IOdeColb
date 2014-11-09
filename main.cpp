@@ -26,7 +26,7 @@ int main(int argC, char *argV[]){
     int timeout = 0;
     
     
-    int runs = 3;
+    int runs = 1;
     
     while (runs > 0){
 		bool search = true;
@@ -65,7 +65,10 @@ int main(int argC, char *argV[]){
             else {		//goal search
 				switch (camera.dir) {
 					case FORWARD:
-						if (!skip) manager.moveRobot(0, 0, 0);
+						if (!skip) {
+							manager.moveRobot(0, 0, 0);
+							manager.shootCoil();
+						}
 						else std::cout << "shoot, goal forward" << std::endl;
 						search = false;
 						break;

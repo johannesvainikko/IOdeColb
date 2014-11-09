@@ -2,7 +2,7 @@
 #include <string>
 
 void PictureManager::init(int f){
-    cap.open(0);
+    cap.open(-1);
     cap >> frame;
     cv::Size su = frame.size();
     widthImg = (su.width)/2;

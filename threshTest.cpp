@@ -10,7 +10,7 @@ int main() {
 	namedWindow("video", 1);
 	namedWindow("Original", 1);
 	
-	VideoCapture cap(0);
+	VideoCapture cap(-1);
 	Mat frame, hsv;
 	Mat ranged;
 	int lowerH = 100;

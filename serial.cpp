@@ -37,7 +37,7 @@ void mySleep(int sleepMs)
 
 int* scanPorts() {
 	static int ports[4];
-    for (int i=24;i<27;i++) {
+    for (int i=24;i<28;i++) {
         int k =-1;
         do {
             cout<<"port "<<i;
@@ -52,12 +52,12 @@ int* scanPorts() {
 					//RS232_CloseComport(i);
 
             }
-            if (k<=2 && k>=0){
+            if (k<=3 && k>=0){
                 ports[k]=i;
             }
-            if (k == 255) {
+            /*if (k == 255) {
 				ports[3] = k;
-			}
+			}*/
 
             
 
@@ -87,6 +87,7 @@ void closePorts(int ports[]) {
 	RS232_CloseComport(ports[0]);
 	RS232_CloseComport(ports[1]);
 	RS232_CloseComport(ports[2]);
+	RS232_CloseComport(ports[3]);
 }
 
 int getIDn(int port){
@@ -197,11 +198,13 @@ void sCoil(int port){
 	 
 	 
 	 sendAsString( "fs0", port);
+	 usleep(1000000);
 	 sendAsString( "c", port);
-	 usleep(500000);
+	 usleep(1000000);
 	 sendAsString( "k3000", port);
-	 usleep(100000);
+	 usleep(1000000);
 	 sendAsString( "fs1", port);
+	 usleep(1000000);
 }
 
 
