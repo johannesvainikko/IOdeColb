@@ -24,14 +24,14 @@ void RobotManager::initSerial() {
 	//usleep(3000000);
 	//moveRobot(270, 10, 11);
 	//usleep(3000000);
-	moveRobot(0, 20, 0);
-	usleep(1000000);
-	moveRobot(180, 20, 0);
-	usleep(1000000);
-	moveRobot(0, 0, 20);
-	usleep(1000000);
-	moveRobot(0, 0, -20);
-	usleep(1000000);
+	//moveRobot(0, 20, 0);
+	//usleep(1000000);
+	//moveRobot(180, 20, 0);
+	//usleep(1000000);
+	//moveRobot(0, 0, 20);
+	//usleep(1000000);
+	//moveRobot(0, 0, -20);
+	//usleep(1000000);
 	
 	moveRobot(0, 0, 0);
 	usleep(2000000);

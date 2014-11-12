@@ -37,7 +37,8 @@ void PictureManager::where(int f){
         dev=DEV;
     }
     else {
-        dev=(largestG.rect.width)/2;
+        dev=(largestG.rect.width)/4;
+        dev=(largestG.rect.width)/4;
         largestObject=largestG;
     }
     if((widthImg-dev)<(largestObject.x)){

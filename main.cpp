@@ -4,11 +4,12 @@
 #include <unistd.h>
 
 int main(int argC, char *argV[]){
+	
     bool skip=false;
     int target = BALL;
 	RobotManager manager;
+	if (!skip) manager.initSerial();
     PictureManager camera;
-    camera.init(YELLOW);
     
     if (argC>1){
         if (strcmp(argV[1], "-computer")==0) {
@@ -21,12 +22,12 @@ int main(int argC, char *argV[]){
 		camera.init(YELLOW);
 	}
     
-    if (!skip) manager.initSerial();
+    
     
     int timeout = 0;
     
     
-    int runs = 1;
+    int runs = 3;
     
     while (runs > 0){
 		bool search = true;
@@ -53,7 +54,7 @@ int main(int argC, char *argV[]){
 					case STOP:
 					timeout = 0;
 						if (!skip) {
-							manager.moveRobot(0, 10, 0);
+							manager.moveRobot(0, 20, 0);
 							usleep(500000);
 						}
 						else std::cout << "no movement, ball in dribbler, start searching for goal" << target << std::endl;
