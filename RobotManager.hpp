@@ -11,6 +11,7 @@ class RobotManager {
 	private:
 	int engines[3];
 	int coilPort;
+	bool isComputer;
 	
 	public:
 	
@@ -18,6 +19,7 @@ class RobotManager {
 	void moveRobot(float angle, float speed, int rotSpeed);
 	void turnRobot(int spd);
 	void shootCoil();
+	bool readSwitch1();
 	
 	~RobotManager();
 };

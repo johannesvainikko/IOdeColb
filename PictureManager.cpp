@@ -1,7 +1,7 @@
 #include "PictureManager.hpp"
 #include <string>
 
-void PictureManager::init(int f){
+void PictureManager::init(int f, RobotManager manager){
     cap.open(-1);
     cap >> frame;
     cv::Size su = frame.size();
@@ -10,8 +10,8 @@ void PictureManager::init(int f){
     elemDilate = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3));
     elemErode = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9,9));
     paramFromFile(f);
-    parameetrid(BALL);
-    parameetrid(GOAL);
+    parameetrid(BALL, manager);
+    parameetrid(GOAL, manager);
     paramToFile(f);
     
 }
@@ -148,7 +148,7 @@ void PictureManager::paramToFile(int f){
     }
 }
 
-void PictureManager::parameetrid(int f) {
+void PictureManager::parameetrid(int f, RobotManager manager) {
     int * lowH;
     int * lowS;
     int * lowV;
@@ -186,6 +186,7 @@ void PictureManager::parameetrid(int f) {
     cv::createTrackbar("LowV", "video", lowV, 255);
     cv::createTrackbar("UpV", "video", upV, 255);
     
+    bool pressed = false;
     while (true) {
         cap >> frame;
         imshow(vName, frame);
@@ -195,11 +196,33 @@ void PictureManager::parameetrid(int f) {
         cv::erode(binary, binary,elemErode);
         imshow("video", binary);
         
-        if(cv::waitKey(1) >= 0){
+        int key = cv::waitKey(1); 
+        if(key == 27){
             cv::destroyWindow(vName);
             cv::destroyWindow("video");
             break;
         }
+        else if (key == 100) {
+			if (!pressed) {
+				manager.moveRobot(0, 0, 10);
+				pressed = true;
+			}
+		}
+		else if (key == 119) {
+			if (!pressed) manager.moveRobot(0, 20, 0);
+			pressed = true;
+		}
+		else if (key == 97) {
+			if (!pressed) manager.moveRobot(0, 0, -10);
+			pressed = true;
+		}
+		else {
+			if (pressed) {
+				manager.moveRobot(0, 0, 0);
+				pressed = false;
+			}
+			
+		}
     }
 }
 

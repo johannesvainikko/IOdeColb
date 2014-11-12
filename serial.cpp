@@ -48,7 +48,7 @@ int* scanPorts() {
 					int t = -1;
 					t = sendAsString( "fs1", i);
                 
-					sleep(1);
+					usleep(100000);
 					//RS232_CloseComport(i);
 
             }
@@ -61,7 +61,7 @@ int* scanPorts() {
 
             
 
-            sleep(1);
+            usleep(100000);
         } while (k==-1);
         
     
@@ -123,11 +123,14 @@ int getIDn(int port){
 
 int sendAsString(std::string task, int port){
     unsigned char * taskIn= (unsigned char *)task.c_str();
+    //stringstream ss;
+    //ss<<taskIn<<endl;
     cout<<taskIn<<endl;
     //unsigned char taskOut[sizeof(taskIn)+1];
     //strncpy(taskOut,taskIn,sizeof(taskIn));
     //taskOut[sizeof(taskOut)]='\n';
     //cout<<taskOut;
+    //usleep(1000);
 
     unsigned char end[1]={'\n'};
     std::size_t founded=task.find("-");
@@ -182,29 +185,39 @@ void pCoil(int port){
 	 cStream.str("");
 }
 
-void sCoil(int port){
-    //const char * in = "k5000\n";
-    //unsigned char * in2;
-    //in2 = (unsigned char *) in;
-    //RS232_SendBuf(port, in2, 6);
-    
-    
-    //stringstream cStream;
-	//string cString;
-	 //cStream << "k5000" << endl;
-	 //cString = cStream.str();
-	 //sendAsString(cString, port);
-	 //cStream.str("");
-	 
+void sCoil(int port){	 
 	 
 	 sendAsString( "fs0", port);
-	 usleep(1000000);
+	 //usleep(1000000);
 	 sendAsString( "c", port);
-	 usleep(1000000);
+	 usleep(500000);
 	 sendAsString( "k2000", port);
-	 usleep(1000000);
+	 usleep(100000);
 	 sendAsString( "fs1", port);
-	 usleep(1000000);
+	 //usleep(1000000);
+}
+
+bool readPin(int port) {
+	sendAsString("gb", port);
+	unsigned char out[256];
+	stringstream ss;
+    for (int i=0;i<10000;i++){
+        RS232_PollComport(port,out,sizeof(out));
+        ss.str("");
+        ss<<out;
+        string saadud=ss.str();
+        std::size_t founded=saadud.find("b:");
+        if (founded != string::npos){
+            ss.str("");
+            ss<<saadud.at(founded+2);
+            int id=stoi(ss.str());
+            //cout<<"pall tribleris "<<id<<endl;
+            if (id==1) return true;
+            else return false;
+        }
+    }
+    cout<<"tyhi port"<<endl;
+    return -1;
 }
 
 

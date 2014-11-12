@@ -6,13 +6,18 @@
 
 
 void RobotManager::initSerial() {
+	isComputer = true;
 	int *ports;
 	ports = scanPorts();
 	for(int i = 0; i < 4; i++){
         engines[i] = ports[i];
     }
     coilPort = engines[3];
+    
+    
     sCoil(coilPort);
+	
+	
 	
 	
 	/*for (int i = 0; i < 90; i+=30) {
@@ -34,7 +39,7 @@ void RobotManager::initSerial() {
 	//usleep(1000000);
 	
 	moveRobot(0, 0, 0);
-	usleep(2000000);
+	usleep(200000);
 	//closePorts(ports);
 	
 }
@@ -50,10 +55,7 @@ RobotManager::~RobotManager()
 }
 
 void RobotManager::shootCoil() {
-	
-	//cCoil(coilPort);
-	//usleep(200000);
-	sCoil(coilPort);
+	if (isComputer) sCoil(coilPort);
 }
 
 void RobotManager::moveRobot(float angle, float speed, int rotSpd) {
@@ -66,8 +68,14 @@ void RobotManager::moveRobot(float angle, float speed, int rotSpd) {
     
     int speeds[3] = {speed0, speed1, speed2};
     
+    //std::cout<<"spd -> " << speed0 << ":" << speed1<< ":" <<speed2 << std::endl;
     for(int i = 0; i < 3; i++){
-        setSpeedForEng(engines[i], speeds[i]);
+        if (isComputer) setSpeedForEng(engines[i], speeds[i]);
     } 
     
+}
+
+bool RobotManager::readSwitch1() {
+	if (isComputer)  return readPin(engines[0]);
+	else return true;
 }

@@ -19,6 +19,7 @@
 #include "object.hpp"
 #include <iostream>
 #include <fstream>
+#include "RobotManager.hpp"
 
 class PictureManager {
     
@@ -49,7 +50,7 @@ private:
     cv::Mat elemErode;
     void paramFromFile(int f);
     void paramToFile(int f);
-    void parameetrid(int f);
+    void parameetrid(int f, RobotManager manager);
     void contourFinder(int f);
     void objectSort(int f);
     void largest(int f);
@@ -61,7 +62,7 @@ public:
     int dir;
     bool isPall;
     bool isGoal;
-    void init(int f);
+    void init(int f, RobotManager manager);
     void refresh(int f);
     void where(int f);
 };
