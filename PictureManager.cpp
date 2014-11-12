@@ -216,6 +216,9 @@ void PictureManager::parameetrid(int f, RobotManager manager) {
 			if (!pressed) manager.moveRobot(0, 0, -10);
 			pressed = true;
 		}
+		else if (key == 99) {
+			manager.shootCoil();
+		}
 		else {
 			if (pressed) {
 				manager.moveRobot(0, 0, 0);

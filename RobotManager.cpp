@@ -15,7 +15,7 @@ void RobotManager::initSerial() {
     coilPort = engines[3];
     
     
-    sCoil(coilPort);
+    //sCoil(coilPort);
 	
 	
 	
