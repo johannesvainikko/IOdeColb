@@ -157,6 +157,27 @@ void setSpeedForEng(int eng, int speed) {
 
 
 
+void sendSpeedCheckForEng(int port){
+    RS232_cputs(port, "s\n");
+    
+}
+
+void readSpeedCheckForEng(int port) {
+	unsigned char answer[20] = {0};
+    RS232_PollComport(port, answer, 100);
+    stringstream ss;
+    int i = 4;
+    while (i < 20) {
+		ss << answer[i];
+		i+= 1;
+		if (answer[i] == '>') break;
+	}
+    cout << "engCheck "<< ss.str() << endl;
+    //usleep(1000000);
+}
+
+
+
 void cCoil(int port){
     //const char * in = "c\n";
     //unsigned char * in2;
@@ -188,13 +209,13 @@ void pCoil(int port){
 void sCoil(int port){	 
 	 
 	 sendAsString( "fs0", port);
-	 //usleep(1000000);
+	 usleep(100000);
 	 sendAsString( "c", port);
-	 usleep(500000);
+	 usleep(700000);
 	 sendAsString( "k2000", port);
 	 usleep(100000);
 	 sendAsString( "fs1", port);
-	 //usleep(1000000);
+	 usleep(100000);
 }
 
 bool readPin(int port) {

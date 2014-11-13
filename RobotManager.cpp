@@ -59,6 +59,8 @@ void RobotManager::shootCoil() {
 }
 
 void RobotManager::moveRobot(float angle, float speed, int rotSpd) {
+	//if (iter < MAXITER) iter += 1;
+	//else checkSpeeds();
 	// This formula for wheel speeds is copied from team Firestarter
 	angle = angle * RAD_PER_DEG;
 	int speed2 = speed * cos(5.0 * PI / 6.0 - angle) + rotSpd;    
@@ -70,10 +72,29 @@ void RobotManager::moveRobot(float angle, float speed, int rotSpd) {
     
     //std::cout<<"spd -> " << speed0 << ":" << speed1<< ":" <<speed2 << std::endl;
     for(int i = 0; i < 3; i++){
-        if (isComputer) setSpeedForEng(engines[i], speeds[i]);
+        if (isComputer) {
+			setSpeedForEng(engines[i], speeds[i]);
+			engSpeeds[i] = speeds[i];
+		}
     } 
     
 }
+
+void RobotManager::checkSpeeds() {
+	if (!sCheck) {
+		sendSpeedCheckForEng(engines[0]);
+		//usleep(1000000);
+		//readSpeedCheckForEng(engines[0]);
+		sCheck = true;
+	}
+	else {
+		readSpeedCheckForEng(engines[0]);
+		sCheck = false;
+	}
+}
+
+
+
 
 bool RobotManager::readSwitch1() {
 	if (isComputer)  return readPin(engines[0]);
