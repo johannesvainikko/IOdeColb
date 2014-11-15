@@ -43,6 +43,7 @@ void PictureManager::where(int f){
     }
     if((widthImg-dev)<(largestObject.x)){
         if ((largestObject.x)<(widthImg+dev)) {
+			//
             if (((f==BALL)&&(largestObject.y > 450))||((f==GOAL)&&(largestObject.y+largestObject.rect.height > maxGoalDist))) {
                 // stop, ball/gate found
                 dir=STOP;
@@ -206,28 +207,31 @@ void PictureManager::parameetrid(int f, RobotManager *manager) {
 			if (pressed == 0) {
 				manager->moveRobot(0, 0, -15);
 			}
-			pressed += 1;
 		}
 		else if (key == 119) {
 			if (pressed == 0) manager->moveRobot(0, 30, 0);
-			pressed += 1;
 		}
 		else if (key == 97) {
 			if (pressed == 0) manager->moveRobot(0, 0, 15);
-			pressed += 1;
+		}
+		else if (key == 115) {
+			if (pressed == 0) manager->moveRobot(0, -30, 0);
+		}
+		else if (key == 117) {
+			if (pressed == 0) manager->moveRobot(0, 100, 0);
 		}
 		else if (key == 99) {
 			manager->shootCoil();
 		}
-		else {
-			if (pressed > 10) {
+		else if (key == -1){
+			if (pressed == 0) {
 				manager->moveRobot(0, 0, 0);
-				pressed = 0;
-			} else {
-				pressed +=1;
+				pressed += 1;
 			}
 			
 		}
+		if (pressed > 3) pressed = 0;
+		else pressed += 1;
     }
 }
 
@@ -303,13 +307,16 @@ void PictureManager::objectSort(int f){
         }
     }
     else{
+		refresh(GOAL);
         for (int i=0; i<(*contours).size(); i++) {
             mu[i]=cv::moments((*contours)[i],false);
             suurus=mu[i].m00;
             if(suurus>5){
-                x=mu[i].m10/mu[i].m00;
-                y=mu[i].m01/mu[i].m00;
-                (*objects).push_back(Object(suurus, x, y));
+				x=mu[i].m10/mu[i].m00;
+				y=mu[i].m01/mu[i].m00;
+				if(!(largestG.rect.contains(cv::Point(x,y)))){
+					(*objects).push_back(Object(suurus, x, y));
+				}
             }
         }
     }

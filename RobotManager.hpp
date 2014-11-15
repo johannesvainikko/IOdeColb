@@ -12,6 +12,7 @@ class RobotManager {
 	private:
 	int engines[3];
 	int engSpeeds[3];
+	int prevEngSpeeds[3];
 	int iter;
 	bool sCheck;
 	int coilPort;

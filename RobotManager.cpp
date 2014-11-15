@@ -84,6 +84,7 @@ void RobotManager::moveRobot(float angle, float speed, int rotSpd) {
        
 			setSpeedForEng(engines[i], speeds[i]);
 			engSpeeds[i] = speeds[i];
+			prevEngSpeeds[i] = engSpeeds[i];
 		} 
     }// else {
 	//		std::cout<<"spd -> " << speed0 << ":" << speed1<< ":" <<speed2 << std::endl;
@@ -103,9 +104,9 @@ void RobotManager::checkSpeeds() {
 			for(int i = 0; i < 3; i++){
 				int spd = readSpeedForEng(engines[i]);
 				//std::cout << "read spd:" << spd << std::endl;
-				if (spd < engSpeeds[i]) {
-					//std::cout << "spd mm "<< i << ":" << spd << " < " << engSpeeds[i] << std::endl;
-				}
+				//if (spd < (prevEngSpeeds[i]*0.6)) {
+				//	std::cout << "spd mm "<< i << ":" << spd << " < " << engSpeeds[i] << std::endl;
+				//}
 			}		
 			sCheck = false;
 		}
