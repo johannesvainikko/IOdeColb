@@ -204,16 +204,16 @@ void PictureManager::parameetrid(int f, RobotManager *manager) {
         }
         else if (key == 100) {
 			if (!pressed) {
-				manager->moveRobot(0, 0, 10);
+				manager->moveRobot(0, 0, -15);
 				pressed = true;
 			}
 		}
 		else if (key == 119) {
-			if (!pressed) manager->moveRobot(0, 20, 0);
+			if (!pressed) manager->moveRobot(0, 30, 0);
 			pressed = true;
 		}
 		else if (key == 97) {
-			if (!pressed) manager->moveRobot(0, 0, -10);
+			if (!pressed) manager->moveRobot(0, 0, 15);
 			pressed = true;
 		}
 		else if (key == 99) {
