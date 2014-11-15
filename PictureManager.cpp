@@ -186,7 +186,7 @@ void PictureManager::parameetrid(int f, RobotManager *manager) {
     cv::createTrackbar("LowV", "video", lowV, 255);
     cv::createTrackbar("UpV", "video", upV, 255);
     
-    bool pressed = false;
+    int pressed = 0;
     while (true) {
         cap >> frame;
         imshow(vName, frame);
@@ -203,26 +203,28 @@ void PictureManager::parameetrid(int f, RobotManager *manager) {
             break;
         }
         else if (key == 100) {
-			if (!pressed) {
+			if (pressed == 0) {
 				manager->moveRobot(0, 0, -15);
-				pressed = true;
 			}
+			pressed += 1;
 		}
 		else if (key == 119) {
-			if (!pressed) manager->moveRobot(0, 30, 0);
-			pressed = true;
+			if (pressed == 0) manager->moveRobot(0, 30, 0);
+			pressed += 1;
 		}
 		else if (key == 97) {
-			if (!pressed) manager->moveRobot(0, 0, 15);
-			pressed = true;
+			if (pressed == 0) manager->moveRobot(0, 0, 15);
+			pressed += 1;
 		}
 		else if (key == 99) {
 			manager->shootCoil();
 		}
 		else {
-			if (pressed) {
+			if (pressed > 10) {
 				manager->moveRobot(0, 0, 0);
-				pressed = false;
+				pressed = 0;
+			} else {
+				pressed +=1;
 			}
 			
 		}
