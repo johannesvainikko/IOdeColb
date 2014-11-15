@@ -67,8 +67,8 @@ void RobotManager::shootCoil() {
 }
 
 void RobotManager::moveRobot(float angle, float speed, int rotSpd) {
-	//if (iter < MAXITER) iter += 1;
-	//else checkSpeeds();
+	if (iter < MAXITER) iter += 1;
+	else checkSpeeds();
 	// This formula for wheel speeds is copied from team Firestarter
 	angle = angle * RAD_PER_DEG;
 	int speed2 = speed * cos(5.0 * PI / 6.0 - angle) + rotSpd;    
@@ -85,9 +85,9 @@ void RobotManager::moveRobot(float angle, float speed, int rotSpd) {
 			setSpeedForEng(engines[i], speeds[i]);
 			engSpeeds[i] = speeds[i];
 		} 
-    } else {
-			std::cout<<"spd -> " << speed0 << ":" << speed1<< ":" <<speed2 << std::endl;
-	}
+    }// else {
+	//		std::cout<<"spd -> " << speed0 << ":" << speed1<< ":" <<speed2 << std::endl;
+	//}
 }
 
 

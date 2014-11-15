@@ -124,9 +124,9 @@ int getIDn(int port){
 
 int sendAsString(std::string task, int port){
     unsigned char * taskIn= (unsigned char *)task.c_str();
-    //stringstream ss;
-    //ss<<taskIn<<endl;
-    cout<<taskIn<<endl;
+    stringstream ss;
+    ss<<taskIn<<endl;
+    //cout<<taskIn<<endl;
     //unsigned char taskOut[sizeof(taskIn)+1];
     //strncpy(taskOut,taskIn,sizeof(taskIn));
     //taskOut[sizeof(taskOut)]='\n';
