@@ -6,28 +6,37 @@
 int main(int argC, char *argV[]){
 
     int target = BALL;
-	RobotManager manager;
+	RobotManager *tmpManager = new RobotManager();
+	tmpManager->hasSerial = false;
 	
     PictureManager camera;
     
     if (argC>1){
         if (strcmp(argV[1], "-cmp")==0) {
-            camera.init(YELLOW, manager);
+            camera.init(YELLOW, tmpManager);
         }
         if (strcmp(argV[1], "-BLUE")==0) {
-			manager.initSerial();
-            camera.init(BLUE, manager);
+			//manager.initSerial();
+            camera.init(BLUE, tmpManager);
+            //manager.initSerial();
         }
     } else {
-		manager.initSerial();
-		camera.init(YELLOW, manager);
+		tmpManager->initSerial();
+		camera.init(YELLOW, tmpManager);
+		//manager.initSerial();
 	}
-    
-    
+	
+	camera.maxGoalDist = 400;
+	
+    RobotManager manager = *tmpManager;
+    //manager.initSerial();
     
     int timeout = 0;
+    int ballTimeout = 0;
+    bool movingCloserToGoal = false;
     
-    int runs = 3;
+    
+    int runs = 10;
     
     while (runs > 0){
 		bool search = true;
@@ -60,8 +69,8 @@ int main(int argC, char *argV[]){
 				else {		//goal search
 					switch (camera.dir) {
 						case FORWARD:
-							manager.moveRobot(0, 0, 0);
-							manager.shootCoil();
+							manager.moveRobot(0, 20, 0);
+							//manager.shootCoil();
 							search = false;
 							break;
 						case LEFT:
@@ -75,7 +84,8 @@ int main(int argC, char *argV[]){
 						case STOP:
 							timeout = 0;
 							manager.moveRobot(0, 0, 0);
-							manager.shootCoil();
+							if (!movingCloserToGoal) manager.shootCoil();
+							movingCloserToGoal = false;
 							if (target==BALL) target=GOAL;
 							else target=BALL;
 							search = false;
@@ -84,7 +94,16 @@ int main(int argC, char *argV[]){
 				}
 			}
 			else{
-				if (timeout < 500) {
+				if (target == BALL) {
+					if (ballTimeout < 300){
+						ballTimeout += 1;
+					} else {
+						target = GOAL;
+						movingCloserToGoal = true;
+						camera.maxGoalDist -= 50;
+					}
+				}
+				if (timeout < 5000) {
 					timeout = timeout+1;
 					manager.moveRobot(0, 0, -10);
 				} else {

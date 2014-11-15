@@ -45,8 +45,9 @@ int* scanPorts() {
             
                 if (k >= 0) {
 
-					int t = -1;
-					t = sendAsString( "fs1", i);
+					//int t = -1;
+					//t = 
+					sendAsString( "fs1", i);
                 
 					usleep(100000);
 					//RS232_CloseComport(i);
@@ -162,7 +163,7 @@ void sendSpeedCheckForEng(int port){
     
 }
 
-void readSpeedCheckForEng(int port) {
+int readSpeedForEng(int port) {
 	unsigned char answer[20] = {0};
     RS232_PollComport(port, answer, 100);
     stringstream ss;
@@ -174,6 +175,7 @@ void readSpeedCheckForEng(int port) {
 	}
     cout << "engCheck "<< ss.str() << endl;
     //usleep(1000000);
+    return stoi(ss.str());
 }
 
 

@@ -50,7 +50,7 @@ private:
     cv::Mat elemErode;
     void paramFromFile(int f);
     void paramToFile(int f);
-    void parameetrid(int f, RobotManager manager);
+    void parameetrid(int f, RobotManager *manager);
     void contourFinder(int f);
     void objectSort(int f);
     void largest(int f);
@@ -60,9 +60,10 @@ private:
 public:
     PictureManager(){};
     int dir;
+    int maxGoalDist;
     bool isPall;
     bool isGoal;
-    void init(int f, RobotManager manager);
+    void init(int f, RobotManager *manager);
     void refresh(int f);
     void where(int f);
 };

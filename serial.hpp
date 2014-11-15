@@ -9,7 +9,7 @@ int* scanPorts();
 void closePorts(int ports[]);
 void setSpeedForEng(int eng, int speed);
 void sendSpeedCheckForEng(int port);
-void readSpeedCheckForEng(int port);
+int readSpeedForEng(int port);
 
 void pCoil(int port);
 void cCoil(int port);

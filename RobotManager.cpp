@@ -6,7 +6,8 @@
 
 
 void RobotManager::initSerial() {
-	isComputer = true;
+	std::cout << "initSerial()"<< std::endl;
+	
 	int *ports;
 	ports = scanPorts();
 	for(int i = 0; i < 4; i++){
@@ -14,6 +15,7 @@ void RobotManager::initSerial() {
     }
     coilPort = engines[3];
     
+    hasSerial = true;
     
     //sCoil(coilPort);
 	
@@ -38,24 +40,30 @@ void RobotManager::initSerial() {
 	//moveRobot(0, 0, -20);
 	//usleep(1000000);
 	
+	
 	moveRobot(0, 0, 0);
 	usleep(200000);
 	//closePorts(ports);
 	
+	
+	
 }
 
 RobotManager::~RobotManager()
-{
-	static int ports[4];
-	ports[0] = engines[0];
-	ports[1] = engines[1];
-	ports[2] = engines[2];
-	ports[3] = coilPort;
-    closePorts(ports);
+{	std::cout << "~RobotManager()"<< std::endl;
+	if (hasSerial) {
+		static int ports[4];
+		ports[0] = engines[0];
+		ports[1] = engines[1];
+		ports[2] = engines[2];
+		ports[3] = coilPort;
+		closePorts(ports);
+	}
+	
 }
 
 void RobotManager::shootCoil() {
-	if (isComputer) sCoil(coilPort);
+	if (hasSerial) sCoil(coilPort);
 }
 
 void RobotManager::moveRobot(float angle, float speed, int rotSpd) {
@@ -71,14 +79,17 @@ void RobotManager::moveRobot(float angle, float speed, int rotSpd) {
     int speeds[3] = {speed0, speed1, speed2};
     
     //std::cout<<"spd -> " << speed0 << ":" << speed1<< ":" <<speed2 << std::endl;
-    for(int i = 0; i < 3; i++){
-        if (isComputer) {
+    if (hasSerial) {
+		for(int i = 0; i < 3; i++){
+       
 			setSpeedForEng(engines[i], speeds[i]);
 			engSpeeds[i] = speeds[i];
-		}
-    } 
-    
+		} 
+    } else {
+			std::cout<<"spd -> " << speed0 << ":" << speed1<< ":" <<speed2 << std::endl;
+	}
 }
+
 
 void RobotManager::checkSpeeds() {
 	if (!sCheck) {
@@ -88,7 +99,8 @@ void RobotManager::checkSpeeds() {
 		sCheck = true;
 	}
 	else {
-		readSpeedCheckForEng(engines[0]);
+		int spd = readSpeedForEng(engines[0]);
+		std::cout << "read spd:" << spd << std::endl;
 		sCheck = false;
 	}
 }
@@ -96,7 +108,8 @@ void RobotManager::checkSpeeds() {
 
 
 
+
 bool RobotManager::readSwitch1() {
-	if (isComputer)  return readPin(engines[0]);
+	if (hasSerial)  return readPin(engines[0]);
 	else return true;
 }

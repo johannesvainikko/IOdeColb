@@ -15,11 +15,11 @@ class RobotManager {
 	int iter;
 	bool sCheck;
 	int coilPort;
-	bool isComputer;
+	
 
 	
 	public:
-	
+	bool hasSerial;
 	void initSerial();
 	void moveRobot(float angle, float speed, int rotSpeed);
 	void turnRobot(int spd);

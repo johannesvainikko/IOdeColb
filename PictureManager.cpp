@@ -1,8 +1,8 @@
 #include "PictureManager.hpp"
 #include <string>
 
-void PictureManager::init(int f, RobotManager manager){
-    cap.open(-1);
+void PictureManager::init(int f, RobotManager *manager){
+    cap.open(0);
     cap >> frame;
     cv::Size su = frame.size();
     widthImg = (su.width)/2;
@@ -43,8 +43,8 @@ void PictureManager::where(int f){
     }
     if((widthImg-dev)<(largestObject.x)){
         if ((largestObject.x)<(widthImg+dev)) {
-            if (largestObject.y > 450) {
-                // stop, ball found
+            if (((f==BALL)&&(largestObject.y > 450))||((f==GOAL)&&(largestObject.y+largestObject.rect.height > maxGoalDist))) {
+                // stop, ball/gate found
                 dir=STOP;
             }
             else {
@@ -148,7 +148,7 @@ void PictureManager::paramToFile(int f){
     }
 }
 
-void PictureManager::parameetrid(int f, RobotManager manager) {
+void PictureManager::parameetrid(int f, RobotManager *manager) {
     int * lowH;
     int * lowS;
     int * lowV;
@@ -204,24 +204,24 @@ void PictureManager::parameetrid(int f, RobotManager manager) {
         }
         else if (key == 100) {
 			if (!pressed) {
-				manager.moveRobot(0, 0, 10);
+				manager->moveRobot(0, 0, 10);
 				pressed = true;
 			}
 		}
 		else if (key == 119) {
-			if (!pressed) manager.moveRobot(0, 20, 0);
+			if (!pressed) manager->moveRobot(0, 20, 0);
 			pressed = true;
 		}
 		else if (key == 97) {
-			if (!pressed) manager.moveRobot(0, 0, -10);
+			if (!pressed) manager->moveRobot(0, 0, -10);
 			pressed = true;
 		}
 		else if (key == 99) {
-			manager.shootCoil();
+			manager->shootCoil();
 		}
 		else {
 			if (pressed) {
-				manager.moveRobot(0, 0, 0);
+				manager->moveRobot(0, 0, 0);
 				pressed = false;
 			}
 			
@@ -304,7 +304,7 @@ void PictureManager::objectSort(int f){
         for (int i=0; i<(*contours).size(); i++) {
             mu[i]=cv::moments((*contours)[i],false);
             suurus=mu[i].m00;
-            if(suurus>10){
+            if(suurus>5){
                 x=mu[i].m10/mu[i].m00;
                 y=mu[i].m01/mu[i].m00;
                 (*objects).push_back(Object(suurus, x, y));
