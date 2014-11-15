@@ -173,9 +173,12 @@ int readSpeedForEng(int port) {
 		i+= 1;
 		if (answer[i] == '>') break;
 	}
-    cout << "engCheck "<< ss.str() << endl;
+    //cout << "engCheck "<< ss.str() << endl;
     //usleep(1000000);
-    return stoi(ss.str());
+    //int tst;
+    string str = ss.str();
+   //str >> tst;
+    return atoi(str.c_str());
 }
 
 

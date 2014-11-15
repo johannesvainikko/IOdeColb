@@ -92,17 +92,25 @@ void RobotManager::moveRobot(float angle, float speed, int rotSpd) {
 
 
 void RobotManager::checkSpeeds() {
-	if (!sCheck) {
-		sendSpeedCheckForEng(engines[0]);
-		//usleep(1000000);
-		//readSpeedCheckForEng(engines[0]);
-		sCheck = true;
+	if (hasSerial) {
+		if (!sCheck) {
+			for(int i = 0; i < 3; i++){
+				sendSpeedCheckForEng(engines[i]);
+				sCheck = true;
+			}
+		}
+		else {
+			for(int i = 0; i < 3; i++){
+				int spd = readSpeedForEng(engines[i]);
+				//std::cout << "read spd:" << spd << std::endl;
+				if (spd < engSpeeds[i]) {
+					//std::cout << "spd mm "<< i << ":" << spd << " < " << engSpeeds[i] << std::endl;
+				}
+			}		
+			sCheck = false;
+		}
 	}
-	else {
-		int spd = readSpeedForEng(engines[0]);
-		std::cout << "read spd:" << spd << std::endl;
-		sCheck = false;
-	}
+	
 }
 
 
