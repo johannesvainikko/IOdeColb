@@ -164,7 +164,7 @@ void sendSpeedCheckForEng(int port){
 }
 
 int readSpeedForEng(int port) {
-	unsigned char answer[20] = {0};
+	unsigned char answer[2000] = {0};
     RS232_PollComport(port, answer, 100);
     stringstream ss;
     int i = 4;

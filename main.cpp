@@ -36,7 +36,7 @@ int main(int argC, char *argV[]){
 	
 	
 	
-	camera.maxGoalDist = 40;
+	camera.maxGoalDist = 0;
 	
     
     //manager.initSerial();
@@ -46,7 +46,7 @@ int main(int argC, char *argV[]){
     bool movingCloserToGoal = false;
     
     
-    int runs = 10;
+    int runs = 100;
     
     while (runs > 0){
 		bool search = true;
@@ -57,18 +57,18 @@ int main(int argC, char *argV[]){
 				if (target == BALL) {
 					switch (camera.dir) {
 						case FORWARD:
-							std::cout << "bforward" << std::endl;
-							manager->moveRobot(0, 20, 0);
+							//std::cout << "bforward" << std::endl;
+							manager->moveRobot(0, 40, 0);
 							break;
 						case LEFT:
-							std::cout << "bleft" << std::endl;
+							//std::cout << "bleft" << std::endl;
 							timeout = 0;
-							manager->moveRobot(0, 0, -10);
+							manager->moveRobot(0, 0, -15);
 							break;
 						case RIGHT:
-							std::cout << "bright" << std::endl;
+							//std::cout << "bright" << std::endl;
 							timeout = 0;
-							manager->moveRobot(0, 0, 10);
+							manager->moveRobot(0, 0, 15);
 							break;
 						case STOP:
 							std::cout << "bstop" << std::endl;
@@ -83,20 +83,22 @@ int main(int argC, char *argV[]){
 				else {		//goal search
 					switch (camera.dir) {
 						case FORWARD:
-							std::cout << "gforward" << std::endl;
+							//std::cout << "gforward" << std::endl;
 							manager->moveRobot(0, 20, 0);
 							//manager.shootCoil();
 							//search = false;
 							break;
 						case LEFT:
-							std::cout << "gleft" << std::endl;
+							//std::cout << "gleft" << std::endl;
 							timeout = 0;
-							manager->moveRobot(90, 10, -11);
+							//manager->moveRobot(90, 10, -11);
+							manager->moveRobot(0, 0, -13);
 							break;
 						case RIGHT:
-							std::cout << "gright" << std::endl;
+							//std::cout << "gright" << std::endl;
 							timeout = 0;
-							manager->moveRobot(270, 10, 11);
+							//manager->moveRobot(270, 10, 11);
+							manager->moveRobot(0, 0, 13);
 							break;
 						case STOP:
 							std::cout << "gstop" << std::endl;
@@ -104,7 +106,7 @@ int main(int argC, char *argV[]){
 							manager->moveRobot(0, 0, 0);
 							if (!movingCloserToGoal) {
 								manager->shootCoil();
-							} else std::cout << "noshoot" << std::endl;
+							} else std::cout << "noshoot, goal close" << std::endl;
 							movingCloserToGoal = false;
 							if (target==BALL) target=GOAL;
 							else target=BALL;
@@ -115,21 +117,24 @@ int main(int argC, char *argV[]){
 			}
 			else{
 				if (target == BALL) {
-					if (ballTimeout < 300){
-						ballTimeout += 1;
+					if (ballTimeout < 30000){
+						//ballTimeout += 1;
+						//std::cout << ballTimeout << std::endl;
 					} else {
 						target = GOAL;
 						movingCloserToGoal = true;
-						camera.maxGoalDist -= 50;
+						camera.maxGoalDist += 10;
+						std::cout << "search for goal" << std::endl;
 					}
 				}
-				if (timeout < 5000) {
+				if (timeout < 5000000) {
 					timeout = timeout+1;
 					manager->moveRobot(0, 0, -10);
 				} else {
 					runs = 0;
 					search = 0;
 					timeout = 0;
+					std::cout << "timed out" << std::endl;
 				}
             
 			}
