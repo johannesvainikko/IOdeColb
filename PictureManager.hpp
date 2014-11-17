@@ -46,6 +46,7 @@ private:
     std::vector<Object> pallid;
     std::vector<Object> goal;
     cv::VideoCapture cap;
+    cv::VideoWriter video;
     cv::Mat elemDilate;
     cv::Mat elemErode;
     void paramFromFile(int f);

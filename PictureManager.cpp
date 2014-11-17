@@ -4,6 +4,7 @@
 void PictureManager::init(int f, RobotManager *manager){
     cap.open(0);
     cap >> frame;
+    
     cv::Size su = frame.size();
     widthImg = (su.width)/2;
     heightImg = su.height;
@@ -22,6 +23,7 @@ void PictureManager::refresh(int f){
     isObjectF(f);
     largest(f);
     clear(f);
+    
 }
 
 void PictureManager::clear(int f){
@@ -188,8 +190,14 @@ void PictureManager::parameetrid(int f, RobotManager *manager) {
     cv::createTrackbar("UpV", "video", upV, 255);
     
     int pressed = 0;
+    
+    
+    cap >> frame;
+    video.open("video2.avi",CV_FOURCC('x','v','i','d'),20,cv::Size(frame.size()));
     while (true) {
-        cap >> frame;
+        
+        cap>>frame;
+		video.write(frame);
         imshow(vName, frame);
         cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
         cv::inRange(frame, cv::Scalar(*lowH, *lowS, *lowV), cv::Scalar(*upH, *upS, *upV), binary);
