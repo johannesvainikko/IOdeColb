@@ -2,36 +2,36 @@
 #include <string>
 
 void PictureManager::init(int f, RobotManager *manager){
-    cap.open(0);
-    cap >> frame;
+    cap.open(0); //avab suhtluse kaameraga
+    cap >> frame; //võtab esimese kaadri
     
-    cv::Size su = frame.size();
-    widthImg = (su.width)/2;
+    cv::Size su = frame.size(); //kaadri suurus
+    widthImg = (su.width)/2; //pool kaadri laiusest for lazy reasons :D
     heightImg = su.height;
-    elemDilate = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3));
+    elemDilate = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3)); //millega hiljem erode ja dilatet teha
     elemErode = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9,9));
-    paramFromFile(f);
+    paramFromFile(f); //failist lugemine
     parameetrid(BALL, manager);
     parameetrid(GOAL, manager);
-    paramToFile(f);
+    paramToFile(f); //faili salvestamine
     
 }
 
 void PictureManager::refresh(int f){
-    contourFinder(f);
-    objectSort(f);
-    isObjectF(f);
-    largest(f);
-    clear(f);
+    contourFinder(f); //objekti kontuuride leidmine
+    objectSort(f); //kontuuridest objektide leidmine
+    isObjectF(f); //kas objektid leiti?
+    largest(f); //suurim leitud objekt
+    clear(f); //objektide info puhastamine
     
 }
 
-void PictureManager::clear(int f){
+void PictureManager::clear(int f){ //puhastab leitud pallide/värava info
     if (f==GOAL) goal.clear();
     else pallid.clear();
 }
 
-void PictureManager::where(int f){
+void PictureManager::where(int f){ //palli või värava asukoht kaadri keskkoha suhtes
     Object largestObject(0,0,0);
     int dev;
     if (f==BALL) {
@@ -66,7 +66,7 @@ void PictureManager::where(int f){
     }
 }
 
-void PictureManager::paramFromFile(int f){
+void PictureManager::paramFromFile(int f){ //failist lugemine
     std::string goal;
     if (f==YELLOW) {
         goal="YELLOW";
@@ -117,7 +117,7 @@ void PictureManager::paramFromFile(int f){
     }
 }
 
-void PictureManager::paramToFile(int f){
+void PictureManager::paramToFile(int f){ //faili kirjutamine
     std::string otherGoal;
     std::string goal;
     std::ifstream in;
@@ -151,7 +151,7 @@ void PictureManager::paramToFile(int f){
     }
 }
 
-void PictureManager::parameetrid(int f, RobotManager *manager) {
+void PictureManager::parameetrid(int f, RobotManager *manager) { //kalibreerimine
     int * lowH;
     int * lowS;
     int * lowV;
@@ -243,7 +243,7 @@ void PictureManager::parameetrid(int f, RobotManager *manager) {
     }
 }
 
-void PictureManager::contourFinder(int f) {
+void PictureManager::contourFinder(int f) { //kontuuride leidmine vastavalt objektist
     int * lowH;
     int * lowS;
     int * lowV;
@@ -271,14 +271,14 @@ void PictureManager::contourFinder(int f) {
     }
     cv::Vector<cv::Vec4i> hierarchy;
     cap >> frame;
-    cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
-    cv::inRange(frame, cv::Scalar(*lowH,*lowS,*lowV), cv::Scalar(*upH,*upS,*upV), frame);
-    cv::dilate(frame,frame,elemDilate);
-    cv::erode(frame, frame,elemErode);
-    cv::findContours(frame, (*contours), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+    cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV); //pildi blur
+    cv::inRange(frame, cv::Scalar(*lowH,*lowS,*lowV), cv::Scalar(*upH,*upS,*upV), frame); //värvivahemike järgi väljaarvamine
+    cv::dilate(frame,frame,elemDilate); //saadud binary pildi valgete alade suurendamine
+    cv::erode(frame, frame,elemErode); //sama pildi alade vähendamine (et täita augud või eemaldada üliväiksed objektid !!!võimalik pallikaotaja)
+    cv::findContours(frame, (*contours), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE); //kontuurileidmine (ainult välised)
 }
 
-void PictureManager::objectSort(int f){
+void PictureManager::objectSort(int f){ //värava leidmine eeldusel et suurima alaga kontuur ja pallide puhul väikseid palliks ei loeta
     std::vector<Object> * objects;
     std::vector<std::vector <cv::Point> > * contours;
     if (f==GOAL) {
@@ -289,7 +289,7 @@ void PictureManager::objectSort(int f){
         contours=&contours_B;
         objects=&pallid;
     }
-    std::vector<cv::Moments> mu((*contours).size());
+    std::vector<cv::Moments> mu((*contours).size()); //kontuuride momendid
     int suurus,x,y;
     if (f==GOAL) {
         if (((*contours).size())>0) {
@@ -319,10 +319,10 @@ void PictureManager::objectSort(int f){
         for (int i=0; i<(*contours).size(); i++) {
             mu[i]=cv::moments((*contours)[i],false);
             suurus=mu[i].m00;
-            if(suurus>5){
+            if(suurus>5){ //loeb pallide vektorisse pallid mis on suuremad kui
 				x=mu[i].m10/mu[i].m00;
 				y=mu[i].m01/mu[i].m00;
-				if(!(largestG.rect.contains(cv::Point(x,y)))){
+				if(!(largestG.rect.contains(cv::Point(x,y)))){ //ja ei ole kordinaatidega värava alas
 					(*objects).push_back(Object(suurus, x, y));
 				}
             }
@@ -330,7 +330,7 @@ void PictureManager::objectSort(int f){
     }
 }
 
-void PictureManager::isObjectF(int f){
+void PictureManager::isObjectF(int f){ //kas pallid või värav on kaadris
     bool * isObject;
     std::vector<Object> * objects;
     if (f==GOAL) {
@@ -345,7 +345,7 @@ void PictureManager::isObjectF(int f){
     else *isObject=false;
 }
 
-void PictureManager::largest(int f){
+void PictureManager::largest(int f){ //suurim objekt
     Object * largestObject;
     std::vector<Object> * objects;
     if (f==GOAL) {
