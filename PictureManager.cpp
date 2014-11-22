@@ -6,7 +6,7 @@ void PictureManager::init(int f, RobotManager *manager){
     cap >> frame; //võtab esimese kaadri
     
     cv::Size su = frame.size(); //kaadri suurus
-    widthImg = su.width; //kaadri laius
+    widthImg = (su.width)/2; //kaadri laius /2
     heightImg = su.height;
     elemDilate = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(EDSIZE,EDSIZE)); //millega hiljem erode ja dilatet teha
     elemErode = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(EDSIZE+6,EDSIZE+6));
