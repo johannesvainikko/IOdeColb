@@ -25,7 +25,17 @@ class RobotManager {
 	void moveRobot(float angle, float speed, int rotSpeed);
 	void turnRobot(int spd);
 	void shootCoil();
-	bool readSwitch1();
+	
+	// These poll for switch state, wait and return state
+	bool getSwitch(int nr);
+	
+	// Switch state reading broken up to separete write and read for speed 
+	void sendSwitch(int nr);
+	bool readSwitch(int nr);
+	
+	void runDribler();
+	void stopDribler();
+	
 	void checkSpeeds();
 	
 	~RobotManager();

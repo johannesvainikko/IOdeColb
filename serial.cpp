@@ -160,7 +160,6 @@ void setSpeedForEng(int eng, int speed) {
 
 void sendSpeedCheckForEng(int port){
     RS232_cputs(port, "s\n");
-    
 }
 
 int readSpeedForEng(int port) {
@@ -246,4 +245,55 @@ bool readPin(int port) {
     return -1;
 }
 
+void sendSwitchCheck(int port, int nr) {
+	stringstream ss;
+	ss << "s" << nr << endl;
+	string result=ss.str();
+	RS232_cputs(port, result.c_str());
+	
+}
 
+
+bool readSwitchCheck(int port, int nr) {
+	stringstream sst;
+	sst.str("");
+	sst << "<s" << nr << ":";
+	string keystr = sst.str();
+	
+	unsigned char answer[256] = {0};
+    stringstream ss;
+    for (int i=0;i<10000;i++){
+		RS232_PollComport(port, answer, sizeof(answer));
+		ss.str("");
+        ss<<answer;
+        string result=ss.str();
+        std::size_t founded=result.find(keystr);
+        if (founded != string::npos){;
+            if (result.at(founded+4)=='1') return true;
+            else return false;
+        }
+	}
+    
+    
+    cout<<"readsw timeout"<<endl;
+    return false;
+    
+}
+
+
+void startDribler(int port) {
+	stringstream ss;
+	ss << "tg" << nr << endl;
+	string result=ss.str();
+	RS232_cputs(port, result.c_str());
+	
+}
+
+
+void stopDribler(int port) {
+	stringstream ss;
+	ss << "ts" << nr << endl;
+	string result=ss.str();
+	RS232_cputs(port, result.c_str());
+	
+}

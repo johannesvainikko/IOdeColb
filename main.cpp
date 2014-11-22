@@ -4,10 +4,17 @@
 #include <unistd.h>
 
 int main(int argC, char *argV[]){
+	
+	
+	
+	
+	
+	
 
     int target = BALL;
 	RobotManager *tmpManager = new RobotManager();
-	tmpManager->hasSerial = false;
+	//tmpManager->hasSerial = false;
+	
 	
     PictureManager camera;
     
@@ -21,34 +28,43 @@ int main(int argC, char *argV[]){
         }
     } else {
 		tmpManager->initSerial();
-		camera.init(YELLOW, tmpManager);
-		//manager.initSerial();
+		
+		if (tmpManager->getSwitch(3)){
+			 std::cout << "init BLUE"<< std::endl;
+			 camera.init(BLUE, tmpManager);
+		 } else {
+			 std::cout << "init YELLOW" << std::endl;
+			 camera.init(YELLOW, tmpManager);
+		 }
 	}
 	
 	
 	RobotManager *manager = tmpManager;
 	
-	//bool wait = false;
-	//while (!wait) {
-		// wait = manager.readSwitch1();
-		 usleep(3000000);
-	//}
+	return 0;
 	
 	
 	
 	camera.maxGoalDist = 0;
 	
     
-    //manager.initSerial();
     
     int timeout = 0;
     int ballTimeout = 0;
     bool movingCloserToGoal = false;
     
     
-    int runs = 100;
+	int checkSwitch = 0;
     
-    while (runs > 0){
+    bool wait = true;
+	while (wait) {
+		 wait = tmpManager->getSwitch(2);
+		 usleep(1000000);
+	}
+	
+	bool run = true;
+    
+    while (run){
 		bool search = true;
 		while(search){
 			camera.refresh(target);
@@ -131,17 +147,21 @@ int main(int argC, char *argV[]){
 					timeout = timeout+1;
 					manager->moveRobot(0, 0, -10);
 				} else {
-					runs = 0;
 					search = 0;
 					timeout = 0;
 					std::cout << "timed out" << std::endl;
 				}
             
 			}
-			//std::cout << timeout << std::endl;
+		//check switch
+		if (checkSwitch < 200) checkSwitch += 1;
+		else {
+			checkSwitch = 0;
+			run = tmpManager->getSwitch(2)
+		}
 		}
 		//std::cout << "runs "<<runs << std::endl;
-		runs = runs-1;
+		//runs = runs-1;
 	}
     
     

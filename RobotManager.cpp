@@ -118,7 +118,28 @@ void RobotManager::checkSpeeds() {
 
 
 
-bool RobotManager::readSwitch1() {
-	if (hasSerial)  return readPin(engines[0]);
-	else return true;
+bool RobotManager::getSwitch(int nr) {
+	sendSwitch(nr);
+	usleep(7000);
+	return readSwitch(nr);
 }
+
+ 
+void RobotManager::sendSwitch(int nr) {
+	if (hasSerial) sendSwitchCheck(engines[1], nr);
+}
+
+bool RobotManager::readSwitch(int nr) {
+	if (!hasSerial) return true;
+	return readSwitchCheck(engines[1], nr); 
+}
+	
+
+
+void RobotManager::runDribler() {
+	if (hasSerial) startDribler(engines[3]);
+}
+void RobotManager::stopDribler() {
+	if (hasSerial) stopDribler(engines[3]);
+}
+

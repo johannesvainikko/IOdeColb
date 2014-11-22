@@ -14,6 +14,11 @@ int readSpeedForEng(int port);
 void pCoil(int port);
 void cCoil(int port);
 void sCoil(int port);
-bool readPin(int port);
+void sendSwitchCheck(int port, int nr);
+bool readSwitchCheck(int port, int nr);
+
+
+void startDribler(int port);
+void stopDribler(int port);
 
 #endif // SERIAL_H_INCLUDED
