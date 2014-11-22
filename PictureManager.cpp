@@ -5,6 +5,8 @@ void PictureManager::init(int f, RobotManager *manager){
     cap.open(0); //avab suhtluse kaameraga
     cap >> frame; //võtab esimese kaadri
     
+    video.open("video.avi",CV_FOURCC('x','v','i','d'),20,cv::Size(frame.size())); //video
+    
     cv::Size su = frame.size(); //kaadri suurus
     widthImg = (su.width)/2; //kaadri laius /2
     heightImg = su.height;
@@ -20,6 +22,7 @@ void PictureManager::init(int f, RobotManager *manager){
 
 void PictureManager::refresh(int f){
     cap>>frame;
+    video >> frame; //video
     cv::cvtColor(frame,frame,CV_BGR2HSV);
     if (f==BALL) fieldmask();
     contourFinder(f); //objekti kontuuride leidmine
