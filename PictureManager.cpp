@@ -390,12 +390,30 @@ void PictureManager::largest(int f){ //suurim objekt
 
 void PictureManager::fieldmask(){
     cv::Mat binary;
-    cv::Mat binary2;
-    cv::Mat binary3 = cv::Mat::ones(frame.size(), binary.type())*255;
+    //cv::Mat binary2;
+    //cv::Mat binary3 = cv::Mat::ones(frame.size(), binary.type())*255;
     cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
     cv::inRange(frame, cv::Scalar(lowH_F, lowS_F, lowV_F), cv::Scalar(upH_F, upS_F, upV_F), binary);
     cv::dilate(binary,binary,elemDilate);
     cv::erode(binary, binary,elemErode);
+    cv::line(binary, cv::Point(0,binary.size().height), cv::Point(binary.size().width,binary.size().height), cv::Scalar(255,255,255),3);
+    std::vector<std::vector<cv::Point>> contours;
+    cv::findContours(binary, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+    int suurus;
+    int oldSize = 0;
+    int loc = 0;
+    std::vector<cv::Moments> mu(contours.size());
+    for (int i=0; i<(contours.size()); i++) {
+        mu[i]=cv::moments(contours[i],false);
+        suurus=mu[i].m00;
+        if (suurus>oldSize) {
+            loc=i;
+            oldSize=suurus;
+        }
+    }
+    binary=cv::Mat::zeros(frame.size(), binary.type());
+    cv::drawContours(binary, contours, loc, cv::Scalar(255,255,255),-1);
+
     bitwise_not ( binary, binary );
     
     cv::cvtColor(binary, binary, CV_GRAY2BGR);

@@ -4,7 +4,7 @@
 #define KSIZE 11
 #define KDEV 4
 #define DEV 50
-#define EDSIZE 50
+#define EDSIZE 24
 
 #define BALL 1
 #define GOAL 2
