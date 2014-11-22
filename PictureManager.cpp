@@ -22,7 +22,9 @@ void PictureManager::init(int f, RobotManager *manager){
 
 void PictureManager::refresh(int f){
     cap>>frame;
-    video >> frame; //video
+    
+    video.write(frame); //video
+    
     cv::cvtColor(frame,frame,CV_BGR2HSV);
     if (f==BALL) fieldmask();
     contourFinder(f); //objekti kontuuride leidmine
