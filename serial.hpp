@@ -18,7 +18,7 @@ void sendSwitchCheck(int port, int nr);
 bool readSwitchCheck(int port, int nr);
 
 
-void startDribler(int port);
-void stopDribler(int port);
+void strtDribler(int port);
+void stpDribler(int port);
 
 #endif // SERIAL_H_INCLUDED

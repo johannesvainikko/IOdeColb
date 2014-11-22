@@ -281,18 +281,18 @@ bool readSwitchCheck(int port, int nr) {
 }
 
 
-void startDribler(int port) {
+void strtDribler(int port) {
 	stringstream ss;
-	ss << "tg" << nr << endl;
+	ss << "tg" << endl;
 	string result=ss.str();
 	RS232_cputs(port, result.c_str());
 	
 }
 
 
-void stopDribler(int port) {
+void stpDribler(int port) {
 	stringstream ss;
-	ss << "ts" << nr << endl;
+	ss << "ts"  << endl;
 	string result=ss.str();
 	RS232_cputs(port, result.c_str());
 	

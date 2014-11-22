@@ -137,9 +137,9 @@ bool RobotManager::readSwitch(int nr) {
 
 
 void RobotManager::runDribler() {
-	if (hasSerial) startDribler(engines[3]);
+	if (hasSerial) strtDribler(engines[3]);
 }
 void RobotManager::stopDribler() {
-	if (hasSerial) stopDribler(engines[3]);
+	if (hasSerial) stpDribler(engines[3]);
 }
 

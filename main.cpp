@@ -41,11 +41,10 @@ int main(int argC, char *argV[]){
 	
 	RobotManager *manager = tmpManager;
 	
-	return 0;
 	
 	
 	
-	camera.maxGoalDist = 0;
+	camera.maxGoalDist = 10;
 	
     
     
@@ -56,8 +55,8 @@ int main(int argC, char *argV[]){
     
 	int checkSwitch = 0;
     
-    bool wait = true;
-	while (wait) {
+    bool wait = false;
+	while (!wait) {
 		 wait = tmpManager->getSwitch(2);
 		 usleep(1000000);
 	}
@@ -72,6 +71,7 @@ int main(int argC, char *argV[]){
 				camera.where(target);
 				if (target == BALL) {
 					switch (camera.dir) {
+						std::cout << "ball";
 						case FORWARD:
 							//std::cout << "bforward" << std::endl;
 							manager->moveRobot(0, 40, 0);
@@ -97,6 +97,7 @@ int main(int argC, char *argV[]){
 						}
 					}
 				else {		//goal search
+					std::cout << "goal";
 					switch (camera.dir) {
 						case FORWARD:
 							//std::cout << "gforward" << std::endl;
@@ -133,19 +134,27 @@ int main(int argC, char *argV[]){
 			}
 			else{
 				if (target == BALL) {
-					if (ballTimeout < 30000){
-						//ballTimeout += 1;
-						//std::cout << ballTimeout << std::endl;
+					std::cout << "bnf" << std::endl;
+					if (ballTimeout < 30){
+						ballTimeout += 1;
+						std::cout << ballTimeout << std::endl;
+						manager->moveRobot(0, 0, -10);
 					} else {
 						target = GOAL;
 						movingCloserToGoal = true;
-						camera.maxGoalDist += 10;
-						std::cout << "search for goal" << std::endl;
+						//camera.maxGoalDist += 10;
+						ballTimeout = 0;
+						std::cout << "move closer ro goal" << std::endl;
 					}
+				} else {
+					std::cout << "gnf ";
+					manager->moveRobot(0, 0, 10);
+					std::cout << camera.isGoal << std::endl;
 				}
+				
 				if (timeout < 5000000) {
 					timeout = timeout+1;
-					manager->moveRobot(0, 0, -10);
+					//manager->moveRobot(0, 0, -10);
 				} else {
 					search = 0;
 					timeout = 0;
@@ -154,10 +163,10 @@ int main(int argC, char *argV[]){
             
 			}
 		//check switch
-		if (checkSwitch < 200) checkSwitch += 1;
+		if (checkSwitch < 50) {checkSwitch += 1;}
 		else {
 			checkSwitch = 0;
-			run = tmpManager->getSwitch(2)
+			run = tmpManager->getSwitch(2);
 		}
 		}
 		//std::cout << "runs "<<runs << std::endl;
