@@ -4,11 +4,13 @@
 #define KSIZE 11
 #define KDEV 4
 #define DEV 50
+#define EDSIZE 50
 
 #define BALL 1
 #define GOAL 2
 #define YELLOW 3
 #define BLUE 4
+#define FIELD 5
 
 #define LEFT 1
 #define RIGHT 2
@@ -32,6 +34,12 @@ private:
     int upH_B;
     int upS_B;
     int upV_B;
+    int lowH_F;
+    int lowS_F;
+    int lowV_F;
+    int upH_F;
+    int upS_F;
+    int upV_F;
     int lowH_G;
     int lowS_G;
     int lowV_G;
@@ -57,6 +65,7 @@ private:
     void largest(int f);
     void isObjectF(int f);
     void clear(int f);
+    void fieldmask();
     
 public:
     PictureManager(){};

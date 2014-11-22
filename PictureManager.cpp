@@ -6,11 +6,12 @@ void PictureManager::init(int f, RobotManager *manager){
     cap >> frame; //võtab esimese kaadri
     
     cv::Size su = frame.size(); //kaadri suurus
-    widthImg = (su.width)/2; //pool kaadri laiusest for lazy reasons :D
+    widthImg = su.width; //kaadri laius
     heightImg = su.height;
-    elemDilate = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3)); //millega hiljem erode ja dilatet teha
-    elemErode = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9,9));
+    elemDilate = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(EDSIZE,EDSIZE)); //millega hiljem erode ja dilatet teha
+    elemErode = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(EDSIZE+6,EDSIZE+6));
     paramFromFile(f); //failist lugemine
+    parameetrid(FIELD, manager);
     parameetrid(BALL, manager);
     parameetrid(GOAL, manager);
     paramToFile(f); //faili salvestamine
@@ -18,6 +19,9 @@ void PictureManager::init(int f, RobotManager *manager){
 }
 
 void PictureManager::refresh(int f){
+    cap>>frame;
+    cv::cvtColor(frame,frame,CV_BGR2HSV);
+    if (f==BALL) fieldmask();
     contourFinder(f); //objekti kontuuride leidmine
     objectSort(f); //kontuuridest objektide leidmine
     isObjectF(f); //kas objektid leiti?
@@ -87,6 +91,7 @@ void PictureManager::paramFromFile(int f){ //failist lugemine
         out << "BALL"<<" "<<0<<" "<<0<<" "<<0<<" "<<255<<" "<<255<<" "<<255<< std::endl;
         out << "YELLOW"<<" "<<0<<" "<<0<<" "<<0<<" "<<255<<" "<<255<<" "<<255<< std::endl;
         out << "BLUE"<<" "<<0<<" "<<0<<" "<<0<<" "<<255<<" "<<255<<" "<<255<<  std::endl;
+        out << "FIELD"<<" "<<0<<" "<<0<<" "<<0<<" "<<255<<" "<<255<<" "<<255<<  std::endl;
         out <<" "<<std::endl;
         out.close();
     }
@@ -111,6 +116,14 @@ void PictureManager::paramFromFile(int f){ //failist lugemine
                 upH_G=hU;
                 upS_G=sU;
                 upV_G=vU;
+            }
+            else if(object=="FIELD"){
+                lowH_F=hL;
+                lowS_F=sL;
+                lowV_F=vL;
+                upH_F=hU;
+                upS_F=sU;
+                upV_F=vU;
             }
         }
         in.close();
@@ -144,6 +157,7 @@ void PictureManager::paramToFile(int f){ //faili kirjutamine
             out << "BALL"<<" "<<lowH_B<<" "<<lowS_B<<" "<<lowV_B<<" "<<upH_B<<" "<<upS_B<<" "<<upV_B << std::endl;
             out << goal <<" "<<lowH_G<<" "<<lowS_G<<" "<<lowV_G<<" "<<upH_G<<" "<<upS_G<<" "<<upV_G<<  std::endl;
             out << otherGoal<<" "<<hL<<" "<<sL<<" "<<vL<<" "<<hU<<" "<<sU<<" "<<vU<<  std::endl;
+            out << "FIELD"<<" "<<lowH_F<<" "<<lowS_F<<" "<<lowV_F<<" "<<upH_F<<" "<<upS_F<<" "<<upV_F << std::endl;
             out <<" "<<std::endl;
             out.close();
             break;
@@ -169,6 +183,16 @@ void PictureManager::parameetrid(int f, RobotManager *manager) { //kalibreerimin
         upV=&upV_G;
         vName = "goal";
     }
+    else if(f==FIELD){
+        lowH=&lowH_F;
+        lowS=&lowS_F;
+        lowV=&lowV_F;
+        upH=&upH_F;
+        upS=&upS_F;
+        upV=&upV_F;
+        vName = "field";
+
+    }
     else{
         lowH=&lowH_B;
         lowS=&lowS_B;
@@ -181,6 +205,7 @@ void PictureManager::parameetrid(int f, RobotManager *manager) { //kalibreerimin
     cv::namedWindow("video", 1);
     cv::namedWindow(vName, 1);
     cv::Mat binary;
+    cv::Mat binary2;
     
     cv::createTrackbar("LowH", "video", lowH, 255);
     cv::createTrackbar("UpH", "video", upH, 255);
@@ -192,18 +217,20 @@ void PictureManager::parameetrid(int f, RobotManager *manager) { //kalibreerimin
     int pressed = 0;
     
     
-    cap >> frame;
-    video.open("video2.avi",CV_FOURCC('x','v','i','d'),20,cv::Size(frame.size()));
+    //cap >> frame;
+    //video.open("video2.avi",CV_FOURCC('x','v','i','d'),20,cv::Size(frame.size()));
     while (true) {
-        
         cap>>frame;
-		video.write(frame);
+        cv::cvtColor(frame,frame,CV_BGR2HSV);
+        if(!(f==GOAL)) fieldmask();
         imshow(vName, frame);
         cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
+        cv::cvtColor(frame,frame,CV_BGR2HSV);
         cv::inRange(frame, cv::Scalar(*lowH, *lowS, *lowV), cv::Scalar(*upH, *upS, *upV), binary);
-        cv::dilate(binary,binary,elemDilate);
-        cv::erode(binary, binary,elemErode);
-        imshow("video", binary);
+        bitwise_not(binary,binary2);
+        cv::cvtColor(binary2, binary2, CV_GRAY2BGR);
+        cv::subtract(frame, binary2, binary2);
+        imshow("video", binary2);
         
         int key = cv::waitKey(1); 
         if(key == 27){
@@ -270,11 +297,7 @@ void PictureManager::contourFinder(int f) { //kontuuride leidmine vastavalt obje
         contours=&contours_B;
     }
     cv::Vector<cv::Vec4i> hierarchy;
-    cap >> frame;
-    cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV); //pildi blur
     cv::inRange(frame, cv::Scalar(*lowH,*lowS,*lowV), cv::Scalar(*upH,*upS,*upV), frame); //värvivahemike järgi väljaarvamine
-    cv::dilate(frame,frame,elemDilate); //saadud binary pildi valgete alade suurendamine
-    cv::erode(frame, frame,elemErode); //sama pildi alade vähendamine (et täita augud või eemaldada üliväiksed objektid !!!võimalik pallikaotaja)
     cv::findContours(frame, (*contours), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE); //kontuurileidmine (ainult välised)
 }
 
@@ -365,6 +388,19 @@ void PictureManager::largest(int f){ //suurim objekt
     (*largestObject)=tyhi;
 }
 
+void PictureManager::fieldmask(){
+    cv::Mat binary;
+    cv::Mat binary2;
+    cv::Mat binary3 = cv::Mat::ones(frame.size(), binary.type())*255;
+    cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
+    cv::inRange(frame, cv::Scalar(lowH_F, lowS_F, lowV_F), cv::Scalar(upH_F, upS_F, upV_F), binary);
+    cv::dilate(binary,binary,elemDilate);
+    cv::erode(binary, binary,elemErode);
+    bitwise_not ( binary, binary );
+    
+    cv::cvtColor(binary, binary, CV_GRAY2BGR);
+    cv::subtract(frame, binary, frame);
+}
 
 
 
