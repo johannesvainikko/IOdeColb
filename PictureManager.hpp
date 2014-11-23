@@ -73,6 +73,7 @@ public:
     int maxGoalDist;
     bool isPall;
     bool isGoal;
+    bool isBallForward();
     void init(int f, RobotManager *manager);
     void refresh(int f);
     void where(int f);

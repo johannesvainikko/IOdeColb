@@ -427,7 +427,17 @@ void PictureManager::fieldmask(){
     cv::subtract(frame, binary, frame);
 }
 
-
+bool PictureManager::isBallForward(){
+    refresh(BALL);
+    isBall=false;
+    if((widthImg-DEV)<(largestB.x)){
+        if ((largestB.x)<(widthImg+DEV)) {
+            return true;
+            
+        }
+    }
+    return false;
+}
 
 
 
