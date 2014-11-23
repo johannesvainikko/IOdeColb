@@ -3,7 +3,7 @@
 
 #define KSIZE 11
 #define KDEV 4
-#define DEV 50
+#define DEV 66
 #define EDSIZE 24
 
 #define BALL 1
@@ -26,8 +26,7 @@
 class PictureManager {
     
 private:
-    int widthImg;
-    int heightImg;
+    
     int lowH_B;
     int lowS_B;
     int lowV_B;
@@ -46,8 +45,7 @@ private:
     int upH_G;
     int upS_G;
     int upV_G;
-    Object largestB;
-    Object largestG;
+    
     cv::Mat frame;
     std::vector<std::vector <cv::Point> > contours_B;
     std::vector<std::vector <cv::Point> > contours_G;
@@ -68,6 +66,10 @@ private:
     void fieldmask();
     
 public:
+	int widthImg;
+    int heightImg;
+	Object largestB;
+    Object largestG;
     PictureManager(){};
     int dir;
     int maxGoalDist;

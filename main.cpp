@@ -44,13 +44,14 @@ int main(int argC, char *argV[]){
 	
 	
 	
-	camera.maxGoalDist = 10;
+	camera.maxGoalDist = 0;
 	
     
     
     int timeout = 0;
     int ballTimeout = 0;
     bool movingCloserToGoal = false;
+    
     
     
 	int checkSwitch = 0;
@@ -74,30 +75,52 @@ int main(int argC, char *argV[]){
 						std::cout << "b ";
 						case FORWARD:
 							//std::cout << "bforward" << std::endl;
-							manager->moveRobot(0, 40, 0);
+							if (camera.largestB.y > (camera.heightImg/3)) {
+								manager->moveRobot(0, 50, 0);
+							} else {
+								manager->moveRobot(0, 100, 0);
+							}
 							break;
 						case LEFT:
 							//std::cout << "bleft" << std::endl;
 							timeout = 0;
-							manager->moveRobot(0, 0, -15);
+							if ((camera.widthImg - camera.largestB.x) < 50) {
+								manager->moveRobot(0, 0, -10);
+							} else {
+								manager->moveRobot(0, 0, -20);
+							}
 							break;
 						case RIGHT:
 							//std::cout << "bright" << std::endl;
 							timeout = 0;
-							manager->moveRobot(0, 0, 15);
+							if ((camera.largestB.x - camera.widthImg) < 50) {
+								manager->moveRobot(0, 0, 10);
+							} else {
+								manager->moveRobot(0, 0, 20);
+							}
 							break;
 						case STOP:
 							std::cout << "bstop" << std::endl;
-						timeout = 0;
+							int moveToBall = 0;
 							manager->moveRobot(0, 20, 0);
-							usleep(500000);
-							if (target==BALL) target=GOAL;
-							else target=BALL;
-							break; //switch to goal search
+							while (moveToBall < 20) {
+								moveToBall += 1;
+								if (!tmpManager->getSwitch(1)) {// check if ball in dribbler
+									std::cout << "ball in dribbler" << std::endl;
+									if (target==BALL) target=GOAL;
+									else target=BALL;
+									break; //switch to goal search
+								}
+								usleep(100000);
+							}
+							timeout = 0;
+							
+							//usleep(500000);
+							
 						}
 				} else { // no ball detected
 					std::cout << "bnf ";
-					if (ballTimeout < 50){
+					if (ballTimeout < 20000){
 						ballTimeout += 1;
 						//std::cout << ballTimeout << std::endl;
 						manager->moveRobot(0, 0, -10);
@@ -147,7 +170,7 @@ int main(int argC, char *argV[]){
 						}
 				} else {
 					std::cout << "gnf ";
-					manager->moveRobot(0, 0, 10);
+					manager->moveRobot(0, 0, 20);
 					//std::cout << camera.isGoal << camera.isBall <<std::endl;
 				}
 			} 
