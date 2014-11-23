@@ -429,7 +429,7 @@ void PictureManager::fieldmask(){
 
 bool PictureManager::isBallForward(){
     refresh(BALL);
-    isBall=false;
+    isPall=false;
     if((widthImg-DEV)<(largestB.x)){
         if ((largestB.x)<(widthImg+DEV)) {
             return true;

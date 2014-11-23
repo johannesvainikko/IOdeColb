@@ -67,10 +67,10 @@ int main(int argC, char *argV[]){
 		bool search = true;
 		while(search){
 			camera.refresh(target);
-			if (camera.isPall) {
-				camera.where(target);
-				if (target == BALL) {
-					switch (camera.dir) {
+			camera.where(target);
+			if (target == BALL) {
+				if (camera.isPall) {
+					switch (camera.dir) { //ball detected
 						std::cout << "b ";
 						case FORWARD:
 							//std::cout << "bforward" << std::endl;
@@ -95,10 +95,25 @@ int main(int argC, char *argV[]){
 							else target=BALL;
 							break; //switch to goal search
 						}
+				} else { // no ball detected
+					std::cout << "bnf ";
+					if (ballTimeout < 50){
+						ballTimeout += 1;
+						//std::cout << ballTimeout << std::endl;
+						manager->moveRobot(0, 0, -10);
+					} else {
+						target = GOAL;
+						movingCloserToGoal = true;
+						camera.maxGoalDist += 10;
+						ballTimeout = 0;
+						std::cout << "move closer ro goal" << std::endl;
 					}
-				else {		//goal search
+				}
+				
+			} else if (target == GOAL) {
+				if (camera.isGoal) {
 					std::cout << "g ";
-					switch (camera.dir) {
+					switch (camera.dir) { //goal detected
 						case FORWARD:
 							//std::cout << "gforward" << std::endl;
 							manager->moveRobot(0, 20, 0);
@@ -123,47 +138,20 @@ int main(int argC, char *argV[]){
 							manager->moveRobot(0, 0, 0);
 							if (!movingCloserToGoal) {
 								manager->shootCoil();
-							} else std::cout << "noshoot, goal close" << std::endl;
+							} else std::cout << "noshoot, just moving" << std::endl;
 							movingCloserToGoal = false;
 							if (target==BALL) target=GOAL;
 							else target=BALL;
 							search = false;
 							break;
 						}
-				}
-			}
-			else{
-				if (target == BALL) {
-					std::cout << "bnf ";
-					if (ballTimeout < 500){
-						ballTimeout += 1;
-						std::cout << ballTimeout << std::endl;
-						manager->moveRobot(0, 0, -10);
-					} else {
-						target = GOAL;
-						movingCloserToGoal = true;
-						//camera.maxGoalDist += 10;
-						ballTimeout = 0;
-						std::cout << "move closer ro goal" << std::endl;
-					}
 				} else {
 					std::cout << "gnf ";
 					manager->moveRobot(0, 0, 10);
 					//std::cout << camera.isGoal << camera.isBall <<std::endl;
 				}
-				
-				if (timeout < 5000000) {
-					timeout = timeout+1;
-					//manager->moveRobot(0, 0, -10);
-				} else {
-					search = 0;
-					timeout = 0;
-					std::cout << "timed out" << std::endl;
-				}
-				//std::cout << camera.isGoal << camera.isPall << " ";
-				
-            
-			}
+			} 
+			
 		//check switch
 		if (checkSwitch < 50) {checkSwitch += 1;}
 		else {
