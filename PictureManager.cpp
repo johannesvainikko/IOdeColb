@@ -26,6 +26,7 @@ void PictureManager::refresh(int f){
     video.write(frame); //video
     
     cv::cvtColor(frame,frame,CV_BGR2HSV);
+    cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
     if (f==BALL) fieldmask();
     contourFinder(f); //objekti kontuuride leidmine
     objectSort(f); //kontuuridest objektide leidmine
@@ -227,15 +228,16 @@ void PictureManager::parameetrid(int f, RobotManager *manager) { //kalibreerimin
     while (true) {
         cap>>frame;
         cv::cvtColor(frame,frame,CV_BGR2HSV);
+        cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
         if(!(f==GOAL)) fieldmask();
         imshow(vName, frame);
-        cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
-        cv::cvtColor(frame,frame,CV_BGR2HSV);
+        
+       // cv::cvtColor(frame,frame,CV_BGR2HSV);
         cv::inRange(frame, cv::Scalar(*lowH, *lowS, *lowV), cv::Scalar(*upH, *upS, *upV), binary);
-        bitwise_not(binary,binary2);
-        cv::cvtColor(binary2, binary2, CV_GRAY2BGR);
-        cv::subtract(frame, binary2, binary2);
-        imshow("video", binary2);
+        //bitwise_not(binary,binary2);
+        //cv::cvtColor(binary2, binary2, CV_GRAY2BGR);
+        //cv::subtract(frame, binary2, binary2);
+        imshow("video", binary);
         
         int key = cv::waitKey(1); 
         if(key == 27){
@@ -397,7 +399,7 @@ void PictureManager::fieldmask(){
     cv::Mat binary;
     //cv::Mat binary2;
     //cv::Mat binary3 = cv::Mat::ones(frame.size(), binary.type())*255;
-    cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
+    
     cv::inRange(frame, cv::Scalar(lowH_F, lowS_F, lowV_F), cv::Scalar(upH_F, upS_F, upV_F), binary);
     cv::dilate(binary,binary,elemDilate);
     cv::erode(binary, binary,elemErode);

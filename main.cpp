@@ -71,7 +71,7 @@ int main(int argC, char *argV[]){
 				camera.where(target);
 				if (target == BALL) {
 					switch (camera.dir) {
-						std::cout << "ball";
+						std::cout << "b ";
 						case FORWARD:
 							//std::cout << "bforward" << std::endl;
 							manager->moveRobot(0, 40, 0);
@@ -97,7 +97,7 @@ int main(int argC, char *argV[]){
 						}
 					}
 				else {		//goal search
-					std::cout << "goal";
+					std::cout << "g ";
 					switch (camera.dir) {
 						case FORWARD:
 							//std::cout << "gforward" << std::endl;
@@ -134,8 +134,8 @@ int main(int argC, char *argV[]){
 			}
 			else{
 				if (target == BALL) {
-					std::cout << "bnf" << std::endl;
-					if (ballTimeout < 30){
+					std::cout << "bnf ";
+					if (ballTimeout < 500){
 						ballTimeout += 1;
 						std::cout << ballTimeout << std::endl;
 						manager->moveRobot(0, 0, -10);
@@ -149,7 +149,7 @@ int main(int argC, char *argV[]){
 				} else {
 					std::cout << "gnf ";
 					manager->moveRobot(0, 0, 10);
-					std::cout << camera.isGoal << std::endl;
+					//std::cout << camera.isGoal << camera.isBall <<std::endl;
 				}
 				
 				if (timeout < 5000000) {
@@ -160,6 +160,8 @@ int main(int argC, char *argV[]){
 					timeout = 0;
 					std::cout << "timed out" << std::endl;
 				}
+				//std::cout << camera.isGoal << camera.isPall << " ";
+				
             
 			}
 		//check switch
@@ -168,9 +170,12 @@ int main(int argC, char *argV[]){
 			checkSwitch = 0;
 			run = tmpManager->getSwitch(2);
 		}
+		//std::cout << "bto " <<ballTimeout << std::endl;
+		std::cout<< " " << camera.isGoal << camera.isPall << std::endl;
 		}
 		//std::cout << "runs "<<runs << std::endl;
 		//runs = runs-1;
+		
 	}
     
     
