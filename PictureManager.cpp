@@ -234,6 +234,10 @@ void PictureManager::parameetrid(int f, RobotManager *manager) { //kalibreerimin
         
        // cv::cvtColor(frame,frame,CV_BGR2HSV);
         cv::inRange(frame, cv::Scalar(*lowH, *lowS, *lowV), cv::Scalar(*upH, *upS, *upV), binary);
+        if(f==GOAL){
+            cv::erode(binary,binary,elemErode);
+            cv::dilate(binary,binary,elemErode);
+        }
         //bitwise_not(binary,binary2);
         //cv::cvtColor(binary2, binary2, CV_GRAY2BGR);
         //cv::subtract(frame, binary2, binary2);
@@ -305,6 +309,10 @@ void PictureManager::contourFinder(int f) { //kontuuride leidmine vastavalt obje
     }
     cv::Vector<cv::Vec4i> hierarchy;
     cv::inRange(frame, cv::Scalar(*lowH,*lowS,*lowV), cv::Scalar(*upH,*upS,*upV), frame); //värvivahemike järgi väljaarvamine
+    if(f==GOAL){
+        cv::erode(binary,binary,elemErode);
+        cv::dilate(binary,binary,elemErode);
+    }
     cv::findContours(frame, (*contours), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE); //kontuurileidmine (ainult välised)
 }
 
@@ -378,6 +386,7 @@ void PictureManager::isObjectF(int f){ //kas pallid või värav on kaadris
 void PictureManager::largest(int f){ //suurim objekt
     Object * largestObject;
     std::vector<Object> * objects;
+    int loc;
     if (f==GOAL) {
         objects=&goal;
         largestObject=&largestG;
@@ -390,6 +399,15 @@ void PictureManager::largest(int f){ //suurim objekt
     for (int i=0; i<(*objects).size(); i++) {
         if ((*objects)[i].suurus>tyhi.suurus) {
             tyhi=(*objects)[i];
+            loc=i;
+        }
+    }
+    if (f==BALL) {
+        for (int i=0; i<loc; i++) {
+            if ((((*objects)[i].suurus)+10)>tyhi.suurus) {
+                tyhi=(*objects)[i];
+                break;
+            }
         }
     }
     (*largestObject)=tyhi;
