@@ -386,7 +386,6 @@ void PictureManager::isObjectF(int f){ //kas pallid või värav on kaadris
 void PictureManager::largest(int f){ //suurim objekt
     Object * largestObject;
     std::vector<Object> * objects;
-    int loc;
     if (f==GOAL) {
         objects=&goal;
         largestObject=&largestG;
@@ -399,14 +398,14 @@ void PictureManager::largest(int f){ //suurim objekt
     for (int i=0; i<(*objects).size(); i++) {
         if ((*objects)[i].suurus>tyhi.suurus) {
             tyhi=(*objects)[i];
-            loc=i;
         }
     }
     if (f==BALL) {
-        for (int i=0; i<loc; i++) {
+        for (int i=0; i<(*objects).size(); i++) {
             if ((((*objects)[i].suurus)+10)>tyhi.suurus) {
-                tyhi=(*objects)[i];
-                break;
+                if (((*objects)[i]).y<tyhi.y) {
+                    tyhi=(*objects)[i];
+                }
             }
         }
     }
