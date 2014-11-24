@@ -188,7 +188,7 @@ int main(int argC, char *argV[]){
 			} 
 			
 		//check switch
-		if (checkSwitch < 50) {checkSwitch += 1;}
+		if (checkSwitch < 30) {checkSwitch += 1;}
 		else {
 			checkSwitch = 0;
 			run = tmpManager->getSwitch(2);
