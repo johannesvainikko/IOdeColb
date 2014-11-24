@@ -84,7 +84,13 @@ int main(int argC, char *argV[]){
 						case LEFT:
 							//std::cout << "bleft" << std::endl;
 							timeout = 0;
-							if ((camera.widthImg - camera.largestB.x) < 50) {
+							if ((camera.widthImg - camera.largestB.x) < 20) { // correct course when moving forward
+								if (camera.largestB.y < (camera.heightImg/3)) {
+								manager->moveRobot(0, 100, -10);
+								} else {
+									manager->moveRobot(0, 0, -10);
+								}
+							} else if ((camera.widthImg - camera.largestB.x) < 50) {
 								manager->moveRobot(0, 0, -10);
 							} else {
 								manager->moveRobot(0, 0, -20);
@@ -93,7 +99,13 @@ int main(int argC, char *argV[]){
 						case RIGHT:
 							//std::cout << "bright" << std::endl;
 							timeout = 0;
-							if ((camera.largestB.x - camera.widthImg) < 50) {
+							if ((camera.largestB.x - camera.widthImg) < 20) {
+								if (camera.largestB.y < (camera.heightImg/3)) {
+								manager->moveRobot(0, 100, 10);
+								} else {
+									manager->moveRobot(0, 0, 10);
+								}
+							} else if ((camera.largestB.x - camera.widthImg) < 50) {
 								manager->moveRobot(0, 0, 10);
 							} else {
 								manager->moveRobot(0, 0, 20);
