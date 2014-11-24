@@ -216,7 +216,7 @@ void sCoil(int port){
 	 usleep(100000);
 	 sendAsString( "c", port);
 	 usleep(700000);
-	 sendAsString( "k2000", port);
+	 sendAsString( "k3000", port);
 	 usleep(100000);
 	 sendAsString( "fs1", port);
 	 usleep(100000);
