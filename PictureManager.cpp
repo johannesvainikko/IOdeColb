@@ -1,7 +1,7 @@
 #include "PictureManager.hpp"
 #include <string>
 
-void PictureManager::init(int f, RobotManager *manager){
+void PictureManager::init(RobotManager *manager){
     cap.open(0); //avab suhtluse kaameraga
     cap >> frame; //võtab esimese kaadri
     
@@ -12,11 +12,12 @@ void PictureManager::init(int f, RobotManager *manager){
     heightImg = su.height;
     elemDilate = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(EDSIZE,EDSIZE)); //millega hiljem erode ja dilatet teha
     elemErode = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(EDSIZE+6,EDSIZE+6));
-    paramFromFile(f); //failist lugemine
+    paramFromFile(); //failist lugemine
     parameetrid(FIELD, manager);
     parameetrid(BALL, manager);
-    parameetrid(GOAL, manager);
-    paramToFile(f); //faili salvestamine
+    parameetrid(YELLOW, manager);
+    parameetrid(BLUE, manager);
+    paramToFile(); //faili salvestamine
     
 }
 
@@ -25,6 +26,7 @@ void PictureManager::refresh(int f){
     
     video.write(frame); //video
     
+    if (((f==YELLOW)||(f==BLUE))) goal=f;
     cv::cvtColor(frame,frame,CV_BGR2HSV);
     cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
     if (f==BALL) fieldmask();
@@ -180,14 +182,23 @@ void PictureManager::parameetrid(int f, RobotManager *manager) { //kalibreerimin
     int * upV;
     
     std::string vName;
-    if (f==GOAL) {
+    if (f==YELLOW) {
         lowH=&lowH_G;
         lowS=&lowS_G;
         lowV=&lowV_G;
         upH=&upH_G;
         upS=&upS_G;
         upV=&upV_G;
-        vName = "goal";
+        vName = "yellow goal";
+    }
+    else if (f==BLUE) {
+        lowH=&lowH_GB;
+        lowS=&lowS_GB;
+        lowV=&lowV_GB;
+        upH=&upH_GB;
+        upS=&upS_GB;
+        upV=&upV_GB;
+        vName = "blue goal";
     }
     else if(f==FIELD){
         lowH=&lowH_F;
@@ -229,12 +240,12 @@ void PictureManager::parameetrid(int f, RobotManager *manager) { //kalibreerimin
         cap>>frame;
         cv::cvtColor(frame,frame,CV_BGR2HSV);
         cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
-        if(!(f==GOAL)) fieldmask();
+        if(!((f==YELLOW)||(f==BLUE))) fieldmask();
         imshow(vName, frame);
         
        // cv::cvtColor(frame,frame,CV_BGR2HSV);
         cv::inRange(frame, cv::Scalar(*lowH, *lowS, *lowV), cv::Scalar(*upH, *upS, *upV), binary);
-        if(f==GOAL){
+        if(((f==YELLOW)||(f==BLUE))){
             cv::erode(binary,binary,elemErode);
             cv::dilate(binary,binary,elemErode);
         }
@@ -289,7 +300,7 @@ void PictureManager::contourFinder(int f) { //kontuuride leidmine vastavalt obje
     int * upS;
     int * upV;
     std::vector<std::vector <cv::Point> > * contours;
-    if (f==GOAL) {
+    if (f==YELLOW) {
         lowH=&lowH_G;
         lowS=&lowS_G;
         lowV=&lowV_G;
@@ -297,6 +308,15 @@ void PictureManager::contourFinder(int f) { //kontuuride leidmine vastavalt obje
         upS=&upS_G;
         upV=&upV_G;
         contours=&contours_G;
+    }
+    else if (f==BLUE) {
+        lowH=&lowH_GB;
+        lowS=&lowS_GB;
+        lowV=&lowV_GB;
+        upH=&upH_GB;
+        upS=&upS_GB;
+        upV=&upV_GB;
+        vName = "blue goal";
     }
     else{
         lowH=&lowH_B;
@@ -309,7 +329,7 @@ void PictureManager::contourFinder(int f) { //kontuuride leidmine vastavalt obje
     }
     cv::Vector<cv::Vec4i> hierarchy;
     cv::inRange(frame, cv::Scalar(*lowH,*lowS,*lowV), cv::Scalar(*upH,*upS,*upV), frame); //värvivahemike järgi väljaarvamine
-    if(f==GOAL){
+    if(((f==YELLOW)||(f==BLUE))){
         cv::erode(frame,frame,elemErode);
         cv::dilate(frame,frame,elemErode);
     }
@@ -319,7 +339,7 @@ void PictureManager::contourFinder(int f) { //kontuuride leidmine vastavalt obje
 void PictureManager::objectSort(int f){ //värava leidmine eeldusel et suurima alaga kontuur ja pallide puhul väikseid palliks ei loeta
     std::vector<Object> * objects;
     std::vector<std::vector <cv::Point> > * contours;
-    if (f==GOAL) {
+    if (((f==YELLOW)||(f==BLUE))) {
         contours=&contours_G;
         objects=&goal;
     }
@@ -329,7 +349,7 @@ void PictureManager::objectSort(int f){ //värava leidmine eeldusel et suurima a
     }
     std::vector<cv::Moments> mu((*contours).size()); //kontuuride momendid
     int suurus,x,y;
-    if (f==GOAL) {
+    if (((f==YELLOW)||(f==BLUE))) {
         if (((*contours).size())>0) {
             int loc = 0;
             int oldSize = 0;
@@ -353,7 +373,7 @@ void PictureManager::objectSort(int f){ //värava leidmine eeldusel et suurima a
         }
     }
     else{
-		refresh(GOAL);
+		refresh(goal);
         for (int i=0; i<(*contours).size(); i++) {
             mu[i]=cv::moments((*contours)[i],false);
             suurus=mu[i].m00;
@@ -371,7 +391,7 @@ void PictureManager::objectSort(int f){ //värava leidmine eeldusel et suurima a
 void PictureManager::isObjectF(int f){ //kas pallid või värav on kaadris
     bool * isObject;
     std::vector<Object> * objects;
-    if (f==GOAL) {
+    if (((f==YELLOW)||(f==BLUE))) {
         objects=&goal;
         isObject=&isGoal;
     }
@@ -386,7 +406,7 @@ void PictureManager::isObjectF(int f){ //kas pallid või värav on kaadris
 void PictureManager::largest(int f){ //suurim objekt
     Object * largestObject;
     std::vector<Object> * objects;
-    if (f==GOAL) {
+    if (((f==YELLOW)||(f==BLUE))) {
         objects=&goal;
         largestObject=&largestG;
     }

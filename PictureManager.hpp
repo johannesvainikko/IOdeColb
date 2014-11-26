@@ -7,7 +7,6 @@
 #define EDSIZE 24
 
 #define BALL 1
-#define GOAL 2
 #define YELLOW 3
 #define BLUE 4
 #define FIELD 5
@@ -26,7 +25,7 @@
 class PictureManager {
     
 private:
-    
+    int goal;
     int lowH_B;
     int lowS_B;
     int lowV_B;
@@ -45,6 +44,12 @@ private:
     int upH_G;
     int upS_G;
     int upV_G;
+    int lowH_GB;
+    int lowS_GB;
+    int lowV_GB;
+    int upH_GB;
+    int upS_GB;
+    int upV_GB;
     
     cv::Mat frame;
     std::vector<std::vector <cv::Point> > contours_B;
@@ -55,8 +60,8 @@ private:
     cv::VideoWriter video;
     cv::Mat elemDilate;
     cv::Mat elemErode;
-    void paramFromFile(int f);
-    void paramToFile(int f);
+    void paramFromFile();
+    void paramToFile();
     void parameetrid(int f, RobotManager *manager);
     void contourFinder(int f);
     void objectSort(int f);
@@ -76,7 +81,7 @@ public:
     bool isPall;
     bool isGoal;
     bool isBallForward();
-    void init(int f, RobotManager *manager);
+    void init(RobotManager *manager);
     void refresh(int f);
     void where(int f);
 };
