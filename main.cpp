@@ -14,30 +14,18 @@ int main(int argC, char *argV[]){
     int target = BALL;
 	RobotManager *tmpManager = new RobotManager();
 	//tmpManager->hasSerial = false;
-	
+	int goalColor = YELLOW;
 	
     PictureManager camera;
     
     if (argC>1){
-        if (strcmp(argV[1], "-cmp")==0) {
-            camera.init(YELLOW, tmpManager);
-        }
         if (strcmp(argV[1], "-BLUE")==0) {
-			tmpManager->initSerial();
-            camera.init(BLUE, tmpManager);
+			goalColor = BLUE;
         }
     } else {
 		tmpManager->initSerial();
-		
-		if (tmpManager->getSwitch(3)){
-			 std::cout << "init BLUE"<< std::endl;
-			 camera.init(BLUE, tmpManager);
-		 } else {
-			 std::cout << "init YELLOW" << std::endl;
-			 camera.init(YELLOW, tmpManager);
-		 }
 	}
-	
+	camera.init(tmpManager);
 	
 	RobotManager *manager = tmpManager;
 	
@@ -56,18 +44,36 @@ int main(int argC, char *argV[]){
     
 	int checkSwitch = 0;
     
+    
+    
+    std::cout << "waiting for switch" << std::endl;
     bool wait = false;
 	while (!wait) {
+		std::cout << ".";
 		 wait = tmpManager->getSwitch(2);
 		 usleep(1000000);
 	}
+	
+	// read gate from switch
+	if (tmpManager->hasSerial) {
+		if (tmpManager->getSwitch(3)){
+			 std::cout << "set BLUE"<< std::endl;
+			 goalColor = BLUE;
+		 } else {
+			 std::cout << "set YELLOW" << std::endl;
+			 goalColor = YELLOW;
+		 }
+	}
+	
+	
+	
 	
 	bool run = true;
     
     while (run){
 		bool search = true;
 		while(search){
-			camera.refresh(target);
+			camera.refresh(goalColor);
 			camera.where(target);
 			if (target == BALL) {
 				if (camera.isPall) {
@@ -188,16 +194,36 @@ int main(int argC, char *argV[]){
 			} 
 			
 		//check switch
-		if (checkSwitch < 5) {
+		if (checkSwitch < 30) {
 			checkSwitch += 1;
-			std::cout<< "chk sw" << checkSwitch << std::endl;
+			//std::cout<< "chk sw" << checkSwitch << std::endl;
 			}
 		else {
 			checkSwitch = 0;
-			std::cout<< "end it " << tmpManager->getSwitch(2) << std::endl;
-			bool sw = tmpManager->getSwitch(2);
-			run = sw;
-			search = sw;
+			//std::cout<< "end it " << tmpManager->getSwitch(2) << std::endl;
+			//bool sw = tmpManager->getSwitch(2);
+			//run = sw;
+			//search = sw;
+			if (!tmpManager->getSwitch(2)) {
+				int times = 0;
+				while (times < 10) { // 10 seconds to switch the goal or code exits
+					if (tmpManager->getSwitch(2)){
+						times = 11;
+						if (tmpManager->hasSerial) {
+							if (tmpManager->getSwitch(3)){
+								std::cout << "set BLUE"<< std::endl;
+								goalColor = BLUE;
+							} else {
+								std::cout << "set YELLOW" << std::endl;
+								goalColor = YELLOW;
+							}
+						}
+					}
+					times += 1;
+					usleep(1000000);
+				}
+				if (times == 10) return 0;
+			}
 		}
 		//std::cout << "bto " <<ballTimeout << std::endl;
 		std::cout<< " " << camera.isGoal << camera.isPall << std::endl;

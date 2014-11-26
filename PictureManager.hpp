@@ -7,6 +7,7 @@
 #define EDSIZE 24
 
 #define BALL 1
+#define GOAL 1
 #define YELLOW 3
 #define BLUE 4
 #define FIELD 5
