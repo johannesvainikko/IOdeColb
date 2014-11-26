@@ -26,11 +26,14 @@ void PictureManager::refresh(int f){
     
     video.write(frame); //video
     
-    if (((f==YELLOW)||(f==BLUE))) goal=f;
     cv::cvtColor(frame,frame,CV_BGR2HSV);
     cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
     if (f==BALL) fieldmask();
     contourFinder(f); //objekti kontuuride leidmine
+    if (((f==YELLOW)||(f==BLUE))){
+        lastGoal=f;
+        f=GOAL;
+    }
     objectSort(f); //kontuuridest objektide leidmine
     isObjectF(f); //kas objektid leiti?
     largest(f); //suurim leitud objekt
@@ -301,7 +304,7 @@ void PictureManager::contourFinder(int f) { //kontuuride leidmine vastavalt obje
         upH=&upH_GB;
         upS=&upS_GB;
         upV=&upV_GB;
-        vName = "blue goal";
+        contours=&contours_G;
     }
     else{
         lowH=&lowH_B;
@@ -324,7 +327,7 @@ void PictureManager::contourFinder(int f) { //kontuuride leidmine vastavalt obje
 void PictureManager::objectSort(int f){ //värava leidmine eeldusel et suurima alaga kontuur ja pallide puhul väikseid palliks ei loeta
     std::vector<Object> * objects;
     std::vector<std::vector <cv::Point> > * contours;
-    if (((f==YELLOW)||(f==BLUE))) {
+    if (f==GOAL) {
         contours=&contours_G;
         objects=&goal;
     }
@@ -334,7 +337,7 @@ void PictureManager::objectSort(int f){ //värava leidmine eeldusel et suurima a
     }
     std::vector<cv::Moments> mu((*contours).size()); //kontuuride momendid
     int suurus,x,y;
-    if (((f==YELLOW)||(f==BLUE))) {
+    if (f==GOAL) {
         if (((*contours).size())>0) {
             int loc = 0;
             int oldSize = 0;
@@ -358,7 +361,8 @@ void PictureManager::objectSort(int f){ //värava leidmine eeldusel et suurima a
         }
     }
     else{
-		refresh(goal);
+		refresh(lastGoal);
+        isGoal=false;
         for (int i=0; i<(*contours).size(); i++) {
             mu[i]=cv::moments((*contours)[i],false);
             suurus=mu[i].m00;
@@ -376,7 +380,7 @@ void PictureManager::objectSort(int f){ //värava leidmine eeldusel et suurima a
 void PictureManager::isObjectF(int f){ //kas pallid või värav on kaadris
     bool * isObject;
     std::vector<Object> * objects;
-    if (((f==YELLOW)||(f==BLUE))) {
+    if (f==GOAL) {
         objects=&goal;
         isObject=&isGoal;
     }
@@ -391,7 +395,7 @@ void PictureManager::isObjectF(int f){ //kas pallid või värav on kaadris
 void PictureManager::largest(int f){ //suurim objekt
     Object * largestObject;
     std::vector<Object> * objects;
-    if (((f==YELLOW)||(f==BLUE))) {
+    if (f==GOAL) {
         objects=&goal;
         largestObject=&largestG;
     }

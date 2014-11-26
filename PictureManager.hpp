@@ -7,7 +7,7 @@
 #define EDSIZE 24
 
 #define BALL 1
-#define GOAL 1
+#define GOAL 2
 #define YELLOW 3
 #define BLUE 4
 #define FIELD 5
@@ -26,7 +26,7 @@
 class PictureManager {
     
 private:
-    int goal;
+    int lastGoal;
     int lowH_B;
     int lowS_B;
     int lowV_B;
