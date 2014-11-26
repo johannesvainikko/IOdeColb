@@ -78,14 +78,8 @@ void PictureManager::where(int f){ //palli või värava asukoht kaadri keskkoha 
     }
 }
 
-void PictureManager::paramFromFile(int f){ //failist lugemine
+void PictureManager::paramFromFile(){ //failist lugemine
     std::string goal;
-    if (f==YELLOW) {
-        goal="YELLOW";
-    }
-    else{
-        goal="BLUE";
-    }
     std::string object="";
     int hL, sL, vL, hU, sU, vU;
     std::string line = " ";
@@ -117,13 +111,21 @@ void PictureManager::paramFromFile(int f){ //failist lugemine
                 upS_B=sU;
                 upV_B=vU;
             }
-            else if (object==goal) {
+            else if (object=="YELLOW") {
                 lowH_G=hL;
                 lowS_G=sL;
                 lowV_G=vL;
                 upH_G=hU;
                 upS_G=sU;
                 upV_G=vU;
+            }
+            else if (object=="BLUE") {
+                lowH_GB=hL;
+                lowS_GB=sL;
+                lowV_GB=vL;
+                upH_GB=hU;
+                upS_GB=sU;
+                upV_GB=vU;
             }
             else if(object=="FIELD"){
                 lowH_F=hL;
@@ -138,39 +140,22 @@ void PictureManager::paramFromFile(int f){ //failist lugemine
     }
 }
 
-void PictureManager::paramToFile(int f){ //faili kirjutamine
+void PictureManager::paramToFile(){ //faili kirjutamine
     std::string otherGoal;
     std::string goal;
     std::ifstream in;
     std::ofstream out;
-    if (f==YELLOW) {
-        goal="YELLOW";
-        otherGoal="BLUE";
-    }
-    else{
-        goal="BLUE";
-        otherGoal="YELLOW";
-    }
     std::string object;
     int hL, sL, vL, hU, sU, vU;
     std::string line=" ";
-    in.open("values.txt");
-    while (getline(in,line))
-    {
-        in >> object >> hL >> sL >> vL >>  hU >>  sU >>  vU;
-        if (object==otherGoal){
-            in.close();
-            out.open("values.txt");
-            out <<" "<<std::endl;
-            out << "BALL"<<" "<<lowH_B<<" "<<lowS_B<<" "<<lowV_B<<" "<<upH_B<<" "<<upS_B<<" "<<upV_B << std::endl;
-            out << goal <<" "<<lowH_G<<" "<<lowS_G<<" "<<lowV_G<<" "<<upH_G<<" "<<upS_G<<" "<<upV_G<<  std::endl;
-            out << otherGoal<<" "<<hL<<" "<<sL<<" "<<vL<<" "<<hU<<" "<<sU<<" "<<vU<<  std::endl;
-            out << "FIELD"<<" "<<lowH_F<<" "<<lowS_F<<" "<<lowV_F<<" "<<upH_F<<" "<<upS_F<<" "<<upV_F << std::endl;
-            out <<" "<<std::endl;
-            out.close();
-            break;
-        }
-    }
+    out.open("values.txt", std::fstream::trunc);
+    out <<" "<<std::endl;
+    out << "BALL"<<" "<<lowH_B<<" "<<lowS_B<<" "<<lowV_B<<" "<<upH_B<<" "<<upS_B<<" "<<upV_B << std::endl;
+    out << "YELLOW" <<" "<<lowH_G<<" "<<lowS_G<<" "<<lowV_G<<" "<<upH_G<<" "<<upS_G<<" "<<upV_G<<  std::endl;
+    out << "BLUE" <<" "<<lowH_GB<<" "<<lowS_GB<<" "<<lowV_GB<<" "<<upH_GB<<" "<<upS_GB<<" "<<upV_GB<<  std::endl;
+    out << "FIELD"<<" "<<lowH_F<<" "<<lowS_F<<" "<<lowV_F<<" "<<upH_F<<" "<<upS_F<<" "<<upV_F << std::endl;
+    out <<" "<<std::endl;
+    out.close();
 }
 
 void PictureManager::parameetrid(int f, RobotManager *manager) { //kalibreerimine
