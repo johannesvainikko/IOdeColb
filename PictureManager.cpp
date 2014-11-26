@@ -310,8 +310,8 @@ void PictureManager::contourFinder(int f) { //kontuuride leidmine vastavalt obje
     cv::Vector<cv::Vec4i> hierarchy;
     cv::inRange(frame, cv::Scalar(*lowH,*lowS,*lowV), cv::Scalar(*upH,*upS,*upV), frame); //värvivahemike järgi väljaarvamine
     if(f==GOAL){
-        cv::erode(binary,binary,elemErode);
-        cv::dilate(binary,binary,elemErode);
+        cv::erode(frame,frame,elemErode);
+        cv::dilate(frame,frame,elemErode);
     }
     cv::findContours(frame, (*contours), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE); //kontuurileidmine (ainult välised)
 }
@@ -402,8 +402,8 @@ void PictureManager::largest(int f){ //suurim objekt
     }
     if (f==BALL) {
         for (int i=0; i<(*objects).size(); i++) {
-            if ((((*objects)[i].suurus)+10)>tyhi.suurus) {
-                if (((*objects)[i]).y<tyhi.y) {
+            if ((((*objects)[i].suurus)+60)>tyhi.suurus) {
+                if (((*objects)[i]).x<tyhi.x) {
                     tyhi=(*objects)[i];
                 }
             }

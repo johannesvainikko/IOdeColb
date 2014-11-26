@@ -188,10 +188,16 @@ int main(int argC, char *argV[]){
 			} 
 			
 		//check switch
-		if (checkSwitch < 30) {checkSwitch += 1;}
+		if (checkSwitch < 5) {
+			checkSwitch += 1;
+			std::cout<< "chk sw" << checkSwitch << std::endl;
+			}
 		else {
 			checkSwitch = 0;
-			run = tmpManager->getSwitch(2);
+			std::cout<< "end it " << tmpManager->getSwitch(2) << std::endl;
+			bool sw = tmpManager->getSwitch(2);
+			run = sw;
+			search = sw;
 		}
 		//std::cout << "bto " <<ballTimeout << std::endl;
 		std::cout<< " " << camera.isGoal << camera.isPall << std::endl;
