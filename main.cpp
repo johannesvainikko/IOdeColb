@@ -61,9 +61,9 @@ int main(int argC, char *argV[]){
 		bool search = true;
 		while(search){
 			camera.capFrame();
-			camera.refresh(goalColor);
-			camera.where(target);
 			if (target == BALL) {
+				camera.refresh(BALL);
+				camera.where(target);
 				if (camera.isPall) {
 					switch (camera.dir) { //ball detected
 						std::cout << "b ";
@@ -140,6 +140,8 @@ int main(int argC, char *argV[]){
 				}
 				
 			} else if (target == GOAL) {
+				camera.refresh(goalColor);
+				camera.where(target);
 				if (camera.isGoal) {
 					std::cout << "g ";
 					switch (camera.dir) { //goal detected
@@ -201,7 +203,7 @@ int main(int argC, char *argV[]){
 					if (!tmpManager->getSwitch(1)){ // Troggered by lifting dribbler before timeout
 						times = 11;
 						if (tmpManager->hasSerial) {
-							if (tmpManager->getSwitch(3)){
+							if (!tmpManager->getSwitch(3)){
 								std::cout << "set BLUE"<< std::endl;
 								goalColor = BLUE;
 								manager->moveRobot(0, 0, 10);
