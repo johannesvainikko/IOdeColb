@@ -23,12 +23,12 @@ void PictureManager::init(RobotManager *manager){
 }
 
 void PictureManager::capFrame(){
-    cap>>newFrame;
+    cap >> newFrame;
     video.write(newFrame); //video
 }
 
 void PictureManager::refresh(int f){
-    frame=newFrame;
+    newFrame.copyTo(frame);
     
     cv::cvtColor(frame,frame,CV_BGR2HSV);
     cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
