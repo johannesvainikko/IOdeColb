@@ -5,6 +5,7 @@
 #define KDEV 4
 #define DEV 66
 #define EDSIZE 24
+#define ERODESIZE 20
 
 #define BALL 1
 #define GOAL 2
@@ -62,6 +63,7 @@ private:
     cv::VideoWriter video;
     cv::Mat elemDilate;
     cv::Mat elemErode;
+    cv::Mat elemErode2;
     void paramFromFile();
     void paramToFile();
     void parameetrid(int f, RobotManager *manager);

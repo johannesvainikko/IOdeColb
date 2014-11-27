@@ -12,6 +12,7 @@ void PictureManager::init(RobotManager *manager){
     heightImg = su.height;
     elemDilate = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(EDSIZE,EDSIZE)); //millega hiljem erode ja dilatet teha
     elemErode = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(EDSIZE+6,EDSIZE+6));
+    elemErode2 = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(ERODESIZE,ERODESIZE));
     paramFromFile(); //failist lugemine
     parameetrid(FIELD, manager);
     parameetrid(BALL, manager);
@@ -236,8 +237,8 @@ void PictureManager::parameetrid(int f, RobotManager *manager) { //kalibreerimin
        // cv::cvtColor(frame,frame,CV_BGR2HSV);
         cv::inRange(frame, cv::Scalar(*lowH, *lowS, *lowV), cv::Scalar(*upH, *upS, *upV), binary);
         if(((f==YELLOW)||(f==BLUE))){
-            cv::erode(binary,binary,elemErode);
-            cv::dilate(binary,binary,elemErode);
+            cv::erode(binary,binary,elemErode2);
+            cv::dilate(binary,binary,elemErode2);
         }
         //bitwise_not(binary,binary2);
         //cv::cvtColor(binary2, binary2, CV_GRAY2BGR);
@@ -320,8 +321,8 @@ void PictureManager::contourFinder(int f) { //kontuuride leidmine vastavalt obje
     cv::Vector<cv::Vec4i> hierarchy;
     cv::inRange(frame, cv::Scalar(*lowH,*lowS,*lowV), cv::Scalar(*upH,*upS,*upV), frame); //värvivahemike järgi väljaarvamine
     if(((f==YELLOW)||(f==BLUE))){
-        cv::erode(frame,frame,elemErode);
-        cv::dilate(frame,frame,elemErode);
+        cv::erode(frame,frame,elemErode2);
+        cv::dilate(frame,frame,elemErode2);
     }
     cv::findContours(frame, (*contours), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE); //kontuurileidmine (ainult välised)
 }
