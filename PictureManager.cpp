@@ -28,7 +28,7 @@ void PictureManager::capFrame(){
 }
 
 void PictureManager::refresh(int f){
-    newFrame.copyTo(frame);
+    frame = newFrame.clone();
     
     cv::cvtColor(frame,frame,CV_BGR2HSV);
     cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
