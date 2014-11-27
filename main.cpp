@@ -60,6 +60,7 @@ int main(int argC, char *argV[]){
     while (run){
 		bool search = true;
 		while(search){
+			camera.capFrame();
 			camera.refresh(goalColor);
 			camera.where(target);
 			if (target == BALL) {
