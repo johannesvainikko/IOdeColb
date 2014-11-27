@@ -31,7 +31,6 @@ void PictureManager::refresh(int f){
     if (f==BALL) fieldmask();
     contourFinder(f); //objekti kontuuride leidmine
     if (((f==YELLOW)||(f==BLUE))){
-        lastGoal=f;
         f=GOAL;
     }
     objectSort(f); //kontuuridest objektide leidmine
@@ -361,7 +360,10 @@ void PictureManager::objectSort(int f){ //värava leidmine eeldusel et suurima a
         }
     }
     else{
-		refresh(lastGoal);
+		refresh(YELLOW);
+        if (!isGoal) {
+            refresh(BLUE);
+        }
         isGoal=false;
         for (int i=0; i<(*contours).size(); i++) {
             mu[i]=cv::moments((*contours)[i],false);
