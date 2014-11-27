@@ -52,7 +52,9 @@ private:
     int upH_GB;
     int upS_GB;
     int upV_GB;
+    bool wasBall;
     
+    Object lastBall;
     cv::Mat frame;
     cv::Mat newFrame;
     std::vector<std::vector <cv::Point> > contours_B;
