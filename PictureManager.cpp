@@ -21,10 +21,13 @@ void PictureManager::init(RobotManager *manager){
     
 }
 
-void PictureManager::refresh(int f){
+void PictureManager::capFrame(){
     cap>>frame;
-    
     video.write(frame); //video
+}
+
+void PictureManager::refresh(int f){
+    frame=newFrame;
     
     cv::cvtColor(frame,frame,CV_BGR2HSV);
     cv::GaussianBlur(frame, frame, cv::Size(KSIZE,KSIZE), KDEV);
@@ -413,7 +416,7 @@ void PictureManager::largest(int f){ //suurim objekt
     }
     if (f==BALL) {
         for (int i=0; i<(*objects).size(); i++) {
-            if ((((*objects)[i].suurus)+60)>tyhi.suurus) {
+            if ((((*objects)[i].y))>tyhi.y) {
                 if (((*objects)[i]).x<tyhi.x) {
                     tyhi=(*objects)[i];
                 }

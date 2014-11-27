@@ -53,6 +53,7 @@ private:
     int upV_GB;
     
     cv::Mat frame;
+    cv::Mat newFrame;
     std::vector<std::vector <cv::Point> > contours_B;
     std::vector<std::vector <cv::Point> > contours_G;
     std::vector<Object> pallid;
@@ -85,6 +86,7 @@ public:
     void init(RobotManager *manager);
     void refresh(int f);
     void where(int f);
+    void capFrame();
 };
 
 
