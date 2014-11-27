@@ -195,9 +195,10 @@ int main(int argC, char *argV[]){
 			//run = sw;
 			//search = sw;
 			if (!tmpManager->getSwitch(2)) {
+				manager->moveRobot(0, 0, 0);
 				std::cout << "waiting dribler lift" << std::endl;
 				int times = 0;
-				while (times < 10) { // 10 seconds to switch the goal or code exits
+				while (times < 20) { // 10 seconds to switch the goal or code exits
 					std::cout << ".";
 					
 					if (!tmpManager->getSwitch(1)){ // Troggered by lifting dribbler before timeout
