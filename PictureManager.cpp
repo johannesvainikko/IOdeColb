@@ -22,8 +22,8 @@ void PictureManager::init(RobotManager *manager){
 }
 
 void PictureManager::capFrame(){
-    cap>>frame;
-    video.write(frame); //video
+    cap>>newFrame;
+    video.write(newFrame); //video
 }
 
 void PictureManager::refresh(int f){
