@@ -42,30 +42,17 @@ int main(int argC, char *argV[]){
     
     
     
-	int checkSwitch = 0;
+	int checkSwitch = 30;
     
     
     
-    std::cout << "waiting for switch" << std::endl;
+    std::cout << "waiting for run switch" << std::endl;
     bool wait = false;
 	while (!wait) {
 		std::cout << ".";
 		 wait = tmpManager->getSwitch(2);
 		 usleep(1000000);
 	}
-	
-	// read gate from switch
-	if (tmpManager->hasSerial) {
-		if (tmpManager->getSwitch(3)){
-			 std::cout << "set BLUE"<< std::endl;
-			 goalColor = BLUE;
-		 } else {
-			 std::cout << "set YELLOW" << std::endl;
-			 goalColor = YELLOW;
-		 }
-	}
-	
-	
 	
 	
 	bool run = true;
@@ -205,17 +192,32 @@ int main(int argC, char *argV[]){
 			//run = sw;
 			//search = sw;
 			if (!tmpManager->getSwitch(2)) {
+				std::cout << "waiting dribler lift" << std::endl;
 				int times = 0;
 				while (times < 10) { // 10 seconds to switch the goal or code exits
-					if (tmpManager->getSwitch(2)){
+					std::cout << ".";
+					
+					if (!tmpManager->getSwitch(1)){ // Troggered by lifting dribbler before timeout
 						times = 11;
 						if (tmpManager->hasSerial) {
 							if (tmpManager->getSwitch(3)){
 								std::cout << "set BLUE"<< std::endl;
 								goalColor = BLUE;
+								manager->moveRobot(0, 0, 10);
 							} else {
 								std::cout << "set YELLOW" << std::endl;
 								goalColor = YELLOW;
+								manager->moveRobot(0, 0, -10);
+							}
+							usleep(400000);
+							manager->moveRobot(0, 0, 0);
+							
+							std::cout << "waiting for run switch";
+							wait = false;
+							while (!wait) {
+								std::cout << ".";
+								wait = tmpManager->getSwitch(2);
+								usleep(1000000);
 							}
 						}
 					}
@@ -226,7 +228,7 @@ int main(int argC, char *argV[]){
 			}
 		}
 		//std::cout << "bto " <<ballTimeout << std::endl;
-		std::cout<< " " << camera.isGoal << camera.isPall << std::endl;
+		//std::cout<< " " << camera.isGoal << camera.isPall << std::endl;
 		}
 		//std::cout << "runs "<<runs << std::endl;
 		//runs = runs-1;
