@@ -209,6 +209,9 @@ int main(int argC, char *argV[]){
 					usleep(100000);
 					if (!tmpManager->getSwitch(1)){
 						std::cout<< std::endl << "Dribler lifted, code will exit" << std::endl;
+						manager->moveRobot(180, 30, 0);
+						usleep(300000);
+						manager->moveRobot(0, 0, 0);
 						return 0;
 					} 
 					wait = tmpManager->getSwitch(2);
@@ -218,11 +221,11 @@ int main(int argC, char *argV[]){
 				if (tmpManager->getSwitch(3)){
 					std::cout << "set BLUE"<< std::endl;
 					goalColor = BLUE;
-					manager->moveRobot(0, 0, 10);
+					//manager->moveRobot(0, 0, 10);
 				} else {
 					std::cout << "set YELLOW" << std::endl;
 					goalColor = YELLOW;
-					manager->moveRobot(0, 0, -10);
+					//manager->moveRobot(0, 0, -10);
 				}
 			}
 		}

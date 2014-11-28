@@ -414,7 +414,7 @@ void PictureManager::largest(int f){ //suurim objekt
     
     if ((f==BALL)&&wasBall) {
         for (int i=0; i<(*objects).size(); i++) {
-            if ((lastBall.y+deviation)>((*objects)[i].y)>(lastBall.y-deviation)) {
+            if (((lastBall.x+deviation)>((*objects)[i].x))&&(((*objects)[i].x)>(lastBall.x-deviation))) {
                 if (((lastBall.x+deviation)>((*objects)[i].x))&&(((*objects)[i].x)>(lastBall.x-deviation))) {
                     tyhi=(*objects)[i];
                 }
