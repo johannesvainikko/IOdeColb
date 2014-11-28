@@ -5,7 +5,7 @@ void PictureManager::init(RobotManager *manager){
     cap.open(0); //avab suhtluse kaameraga
     cap >> frame; //võtab esimese kaadri
     
-    video.open("video.avi",CV_FOURCC('x','v','i','d'),20,cv::Size(frame.size())); //video
+    //video.open("video.avi",CV_FOURCC('x','v','i','d'),20,cv::Size(frame.size())); //video
     
     cv::Size su = frame.size(); //kaadri suurus
     widthImg = (su.width)/2; //kaadri laius /2
@@ -24,7 +24,7 @@ void PictureManager::init(RobotManager *manager){
 
 void PictureManager::capFrame(){
     cap >> newFrame;
-    video.write(newFrame); //video
+    //video.write(newFrame); //video
 }
 
 void PictureManager::refresh(int f){

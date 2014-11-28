@@ -65,8 +65,8 @@ int main(int argC, char *argV[]){
 				camera.refresh(BALL);
 				camera.where(target);
 				if (camera.isPall) {
+					std::cout << "b " << camera.dir << " ";
 					switch (camera.dir) { //ball detected
-						std::cout << "b ";
 						case FORWARD:
 							//std::cout << "bforward" << std::endl;
 							if (camera.largestB.y > (camera.heightImg/3)) {
@@ -118,6 +118,12 @@ int main(int argC, char *argV[]){
 									break; //switch to goal search
 								}
 								usleep(100000);
+							}
+							if (!manager->hasSerial) {
+								std::cout << "computer captured ball" << std::endl;
+								if (target==BALL) target=GOAL;
+								else target=BALL;
+								break; //switch to goal search
 							}
 							timeout = 0;
 							
@@ -232,7 +238,7 @@ int main(int argC, char *argV[]){
 			}
 		}
 		//std::cout << "bto " <<ballTimeout << std::endl;
-		//std::cout<< " " << camera.isGoal << camera.isPall << std::endl;
+		std::cout<< " " << camera.isGoal << camera.isPall << std::endl;
 		}
 		//std::cout << "runs "<<runs << std::endl;
 		//runs = runs-1;
