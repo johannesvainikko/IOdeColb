@@ -202,19 +202,20 @@ int main(int argC, char *argV[]){
 			//search = sw;
 			if (!tmpManager->getSwitch(2)) {
 				manager->moveRobot(0, 0, 0);
-				std::cout << "code paused, waitng for input" << std::endl;
+				std::cout<< std::endl << "code paused, waitng for input" << std::endl;
 				wait = false;
 				while (!wait) {
+					std::cout << ".";
+					usleep(100000);
 					if (!tmpManager->getSwitch(1)){
-						std::cout<< std::endl << "Dribler lifted, code exiting" << std::endl;
+						std::cout<< std::endl << "Dribler lifted, code will exit" << std::endl;
 						return 0;
 					} 
-					std::cout << ".";
 					wait = tmpManager->getSwitch(2);
-					usleep(1000000);
+					
 				}
 				
-				if (!tmpManager->getSwitch(3)){
+				if (tmpManager->getSwitch(3)){
 					std::cout << "set BLUE"<< std::endl;
 					goalColor = BLUE;
 					manager->moveRobot(0, 0, 10);
