@@ -202,39 +202,27 @@ int main(int argC, char *argV[]){
 			//search = sw;
 			if (!tmpManager->getSwitch(2)) {
 				manager->moveRobot(0, 0, 0);
-				std::cout << "waiting dribler lift" << std::endl;
-				int times = 0;
-				while (times < 20) { // 10 seconds to switch the goal or code exits
+				std::cout << "code paused, waitng for input" << std::endl;
+				wait = false;
+				while (!wait) {
+					if (!tmpManager->getSwitch(1)){
+						std::cout<< std::endl << "Dribler lifted, code exiting" << std::endl;
+						return 0;
+					} 
 					std::cout << ".";
-					
-					if (!tmpManager->getSwitch(1)){ // Troggered by lifting dribbler before timeout
-						times = 11;
-						if (tmpManager->hasSerial) {
-							if (!tmpManager->getSwitch(3)){
-								std::cout << "set BLUE"<< std::endl;
-								goalColor = BLUE;
-								manager->moveRobot(0, 0, 10);
-							} else {
-								std::cout << "set YELLOW" << std::endl;
-								goalColor = YELLOW;
-								manager->moveRobot(0, 0, -10);
-							}
-							usleep(400000);
-							manager->moveRobot(0, 0, 0);
-							
-							std::cout << "waiting for run switch";
-							wait = false;
-							while (!wait) {
-								std::cout << ".";
-								wait = tmpManager->getSwitch(2);
-								usleep(1000000);
-							}
-						}
-					}
-					times += 1;
+					wait = tmpManager->getSwitch(2);
 					usleep(1000000);
 				}
-				if (times == 10) return 0;
+				
+				if (!tmpManager->getSwitch(3)){
+					std::cout << "set BLUE"<< std::endl;
+					goalColor = BLUE;
+					manager->moveRobot(0, 0, 10);
+				} else {
+					std::cout << "set YELLOW" << std::endl;
+					goalColor = YELLOW;
+					manager->moveRobot(0, 0, -10);
+				}
 			}
 		}
 		//std::cout << "bto " <<ballTimeout << std::endl;
