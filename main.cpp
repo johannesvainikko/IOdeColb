@@ -68,19 +68,23 @@ int main(int argC, char *argV[]){
 					std::cout << "b " << camera.dir << " ";
 					switch (camera.dir) { //ball detected
 						case FORWARD:
+						std::cout << "f ";
 							//std::cout << "bforward" << std::endl;
 							if (camera.largestB.y > (camera.heightImg/3)) {
 								manager->moveRobot(0, 50, 0);
 							} else {
 								manager->moveRobot(0, 100, 0);
+								std::cout << "f ";
 							}
 							break;
 						case LEFT:
+						std::cout << "l ";
 							//std::cout << "bleft" << std::endl;
 							timeout = 0;
 							if ((camera.widthImg - camera.largestB.x) < 20) { // correct course when moving forward
 								if (camera.largestB.y < (camera.heightImg/3)) {
 								manager->moveRobot(0, 100, -10);
+								std::cout << "f ";
 								} else {
 									manager->moveRobot(0, 0, -10);
 								}
@@ -91,11 +95,13 @@ int main(int argC, char *argV[]){
 							}
 							break;
 						case RIGHT:
+							std::cout << "r ";
 							//std::cout << "bright" << std::endl;
 							timeout = 0;
 							if ((camera.largestB.x - camera.widthImg) < 20) {
 								if (camera.largestB.y < (camera.heightImg/3)) {
-								manager->moveRobot(0, 100, 10);
+									manager->moveRobot(0, 100, 10);
+									std::cout << "f ";
 								} else {
 									manager->moveRobot(0, 0, 10);
 								}
