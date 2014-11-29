@@ -24,6 +24,7 @@ class RobotManager {
 	bool hasSerial;
 	void initSerial();
 	void moveRobot(float angle, float speed, int rotSpeed);
+	void setSpeeds(int spd1, int spd2, int spd3);
 	void turnRobot(int spd);
 	void shootCoil();
 	

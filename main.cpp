@@ -83,7 +83,8 @@ int main(int argC, char *argV[]){
 							timeout = 0;
 							if ((camera.widthImg - camera.largestB.x) < 20) { // correct course when moving forward
 								if (camera.largestB.y < (camera.heightImg/4)) {
-									manager->moveRobot(0, 100, 30);
+									//manager->moveRobot(0, 100, 30);
+									manager->setSpeeds(80, -10, 80);
 									std::cout << "f ";
 								} else {
 									manager->moveRobot(0, 0, -10);
@@ -100,7 +101,8 @@ int main(int argC, char *argV[]){
 							timeout = 0;
 							if ((camera.largestB.x - camera.widthImg) < 20) {
 								if (camera.largestB.y < (camera.heightImg/4)) {
-									manager->moveRobot(0, 100, -30);
+									//manager->moveRobot(0, 100, -30);
+									manager->setSpeeds(80, 10, 80);
 									std::cout << "f ";
 								} else {
 									manager->moveRobot(0, 0, 10);
