@@ -16,6 +16,7 @@ class RobotManager {
 	int iter;
 	bool sCheck;
 	int coilPort;
+	bool alterEng;
 	
 
 	

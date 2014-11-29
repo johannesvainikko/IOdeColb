@@ -65,7 +65,7 @@ int main(int argC, char *argV[]){
 				camera.refresh(BALL);
 				camera.where(target);
 				if (camera.isPall) {
-					std::cout << "b " << camera.dir << " ";
+					std::cout << "b " << camera.dir << " "<< camera.widthImg;
 					switch (camera.dir) { //ball detected
 						case FORWARD:
 						std::cout << "f ";
@@ -82,9 +82,9 @@ int main(int argC, char *argV[]){
 							//std::cout << "bleft" << std::endl;
 							timeout = 0;
 							if ((camera.widthImg - camera.largestB.x) < 20) { // correct course when moving forward
-								if (camera.largestB.y < (camera.heightImg/3)) {
-								manager->moveRobot(0, 100, -10);
-								std::cout << "f ";
+								if (camera.largestB.y < (camera.heightImg/4)) {
+									manager->moveRobot(0, 100, 30);
+									std::cout << "f ";
 								} else {
 									manager->moveRobot(0, 0, -10);
 								}
@@ -99,8 +99,8 @@ int main(int argC, char *argV[]){
 							//std::cout << "bright" << std::endl;
 							timeout = 0;
 							if ((camera.largestB.x - camera.widthImg) < 20) {
-								if (camera.largestB.y < (camera.heightImg/3)) {
-									manager->moveRobot(0, 100, 10);
+								if (camera.largestB.y < (camera.heightImg/4)) {
+									manager->moveRobot(0, 100, -30);
 									std::cout << "f ";
 								} else {
 									manager->moveRobot(0, 0, 10);
@@ -144,7 +144,7 @@ int main(int argC, char *argV[]){
 						manager->moveRobot(0, 0, -10);
 					} else {
 						target = GOAL;
-						movingCloserToGoal = true;
+						movingCloserToGoal = false;
 						camera.maxGoalDist += 10;
 						ballTimeout = 0;
 						std::cout << "move closer ro goal" << std::endl;

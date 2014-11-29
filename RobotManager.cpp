@@ -80,12 +80,19 @@ void RobotManager::moveRobot(float angle, float speed, int rotSpd) {
     
     //std::cout<<"spd -> " << speed0 << ":" << speed1<< ":" <<speed2 << std::endl;
     if (hasSerial) {
-		for(int i = 0; i < 3; i++){
-       
-			setSpeedForEng(engines[i], speeds[i]);
-			engSpeeds[i] = speeds[i];
-			prevEngSpeeds[i] = engSpeeds[i];
-		} 
+		if (alterEng) {
+			for(int i = 0; i < 3; i++){
+		
+				setSpeedForEng(engines[i], speeds[i]);
+				engSpeeds[i] = speeds[i];
+				prevEngSpeeds[i] = engSpeeds[i];
+			} 
+		} else {
+			setSpeedForEng(engines[1], speeds[1]);
+			setSpeedForEng(engines[0], speeds[0]);
+			setSpeedForEng(engines[2], speeds[2]);
+		}
+		alterEng = !alterEng;
     }// else {
 	//		std::cout<<"spd -> " << speed0 << ":" << speed1<< ":" <<speed2 << std::endl;
 	//}
