@@ -10,7 +10,7 @@ int main(int argC, char *argV[]){
 	
 	
 	
-
+    cv::namedWindow("frame", 1);
     int target = BALL;
 	RobotManager *tmpManager = new RobotManager();
 	//tmpManager->hasSerial = false;
@@ -242,10 +242,9 @@ int main(int argC, char *argV[]){
 		}
 		//std::cout << "runs "<<runs << std::endl;
 		//runs = runs-1;
-		
 	}
     
     
-    
+    imshow("frame", camera.frame);
     return 0;
 }

@@ -2,7 +2,6 @@
 #include <string>
 
 void PictureManager::init(RobotManager *manager){
-    cv::namedWindow("frame", 1);
     cap.open(0); //avab suhtluse kaameraga
     cap >> frame; //võtab esimese kaadri
     
@@ -42,7 +41,6 @@ void PictureManager::refresh(int f){
     isObjectF(f); //kas objektid leiti?
     largest(f); //suurim leitud objekt
     clear(f); //objektide info puhastamine
-    imshow("frame", frame);
     
 }
 

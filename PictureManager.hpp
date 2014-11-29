@@ -55,7 +55,6 @@ private:
     bool wasBall;
     
     Object lastBall;
-    cv::Mat frame;
     cv::Mat newFrame;
     std::vector<std::vector <cv::Point> > contours_B;
     std::vector<std::vector <cv::Point> > contours_G;
@@ -77,6 +76,7 @@ private:
     void fieldmask();
     
 public:
+    cv::Mat frame;
 	int widthImg;
     int heightImg;
 	Object largestB;
