@@ -242,9 +242,8 @@ int main(int argC, char *argV[]){
 		}
 		//std::cout << "runs "<<runs << std::endl;
 		//runs = runs-1;
-	}
+        imshow("frame", camera.frame);
+    }
     
-    
-    imshow("frame", camera.frame);
     return 0;
 }
