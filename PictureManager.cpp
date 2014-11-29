@@ -41,6 +41,7 @@ void PictureManager::refresh(int f){
     isObjectF(f); //kas objektid leiti?
     largest(f); //suurim leitud objekt
     clear(f); //objektide info puhastamine
+    imshow("frame", frame);
     
 }
 
