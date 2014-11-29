@@ -429,11 +429,12 @@ void PictureManager::largest(int f){ //suurim objekt
         }
     }
     if (f==BALL) {
-        wasBall=true;
+        if ((*objects).size() > 0) wasBall=true;
+        else wasBall = false;
         lastBall=tyhi;
     }
     else{
-        wasBall=false;
+        //wasBall=false;
     }
     (*largestObject)=tyhi;
 }
