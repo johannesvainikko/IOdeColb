@@ -58,7 +58,6 @@ void PictureManager::where(int f){ //palli või värava asukoht kaadri keskkoha 
     }
     else {
         dev=(largestG.rect.width)/4;
-        dev=(largestG.rect.width)/4;
         largestObject=largestG;
     }
     if((widthImg-dev)<(largestObject.x)){
@@ -85,7 +84,6 @@ void PictureManager::where(int f){ //palli või värava asukoht kaadri keskkoha 
 }
 
 void PictureManager::paramFromFile(){ //failist lugemine
-    std::string goal;
     std::string object="";
     int hL, sL, vL, hU, sU, vU;
     std::string line = " ";
@@ -147,13 +145,7 @@ void PictureManager::paramFromFile(){ //failist lugemine
 }
 
 void PictureManager::paramToFile(){ //faili kirjutamine
-    std::string otherGoal;
-    std::string goal;
-    std::ifstream in;
     std::ofstream out;
-    std::string object;
-    int hL, sL, vL, hU, sU, vU;
-    std::string line=" ";
     out.open("values.txt", std::fstream::trunc);
     out <<" "<<std::endl;
     out << "BALL"<<" "<<lowH_B<<" "<<lowS_B<<" "<<lowV_B<<" "<<upH_B<<" "<<upS_B<<" "<<upV_B << std::endl;
@@ -414,8 +406,8 @@ void PictureManager::largest(int f){ //suurim objekt
     
     if ((f==BALL)&&wasBall) {
         for (int i=0; i<(*objects).size(); i++) {
-            if (((lastBall.x+deviation)>((*objects)[i].x))&&(((*objects)[i].x)>(lastBall.x-deviation))) {
-                if (((lastBall.x+deviation)>((*objects)[i].x))&&(((*objects)[i].x)>(lastBall.x-deviation))) {
+            if ((lastBall.x+deviation)>((*objects)[i].x)) {
+                if (((*objects)[i].x)>(lastBall.x-deviation)) {
                     tyhi=(*objects)[i];
                 }
             }
