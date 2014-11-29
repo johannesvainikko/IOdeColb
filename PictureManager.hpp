@@ -77,7 +77,6 @@ private:
     void fieldmask();
     
 public:
-    cv::namedWindow("frame", 1);
 	int widthImg;
     int heightImg;
 	Object largestB;
