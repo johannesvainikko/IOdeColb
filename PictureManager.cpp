@@ -404,6 +404,7 @@ void PictureManager::largest(int f){ //suurim objekt
     }
     Object tyhi = Object(0,0,0);
     
+    wasBall=false;
     if ((f==BALL)&&wasBall) {
         for (int i=0; i<(*objects).size(); i++) {
             if ((lastBall.x+deviation)>((*objects)[i].x)) {
@@ -420,7 +421,7 @@ void PictureManager::largest(int f){ //suurim objekt
             }
         }
     }
-    if (f==BALL) {
+    /*if (f==BALL) {
         if ((*objects).size() > 0) wasBall=true;
         else wasBall = false;
         lastBall=tyhi;
@@ -428,6 +429,7 @@ void PictureManager::largest(int f){ //suurim objekt
     else{
         //wasBall=false;
     }
+     */
     (*largestObject)=tyhi;
 }
 
