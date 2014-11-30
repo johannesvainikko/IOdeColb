@@ -27,6 +27,7 @@ class RobotManager {
 	void setSpeeds(int spd1, int spd2, int spd3);
 	void turnRobot(int spd);
 	void shootCoil();
+	void shootCoilLong();
 	
 	// These poll for switch state, wait and return state
 	bool getSwitch(int nr);

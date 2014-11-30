@@ -14,6 +14,7 @@ int readSpeedForEng(int port);
 void pCoil(int port);
 void cCoil(int port);
 void sCoil(int port);
+void sCoilLong(int port);
 void sendSwitchCheck(int port, int nr);
 bool readSwitchCheck(int port, int nr);
 

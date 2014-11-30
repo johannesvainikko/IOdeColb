@@ -3,7 +3,7 @@
 
 #define KSIZE 11
 #define KDEV 4
-#define DEV 66
+#define DEV 30
 #define EDSIZE 24
 #define ERODESIZE 20
 
@@ -17,6 +17,9 @@
 #define RIGHT 2
 #define FORWARD 3
 #define STOP 4
+
+#define kDeviationX 5
+#define kDeviationY 20
 
 #include <opencv2/opencv.hpp>
 #include "object.hpp"

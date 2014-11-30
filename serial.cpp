@@ -222,6 +222,19 @@ void sCoil(int port){
 	 usleep(100000);
 }
 
+
+void sCoilLong(int port) {
+	sendAsString( "fs0", port);
+	 usleep(100000);
+	 sendAsString( "c", port);
+	 usleep(1500000);
+	 sendAsString( "k3000", port);
+	 usleep(100000);
+	 sendAsString( "fs1", port);
+	 usleep(100000);
+}
+
+
 bool readPin(int port) {
 	sendAsString("gb", port);
 	unsigned char out[256];

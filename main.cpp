@@ -14,7 +14,7 @@ int main(int argC, char *argV[]){
     int target = BALL;
 	RobotManager *tmpManager = new RobotManager();
 	//tmpManager->hasSerial = false;
-	int goalColor = YELLOW;
+	int goalColor;
 	
     PictureManager camera;
     
@@ -24,6 +24,7 @@ int main(int argC, char *argV[]){
         }
     } else {
 		tmpManager->initSerial();
+		goalColor = YELLOW;
 	}
 	camera.init(tmpManager);
 	
@@ -46,13 +47,13 @@ int main(int argC, char *argV[]){
     
     
     
-    std::cout << "waiting for run switch" << std::endl;
-    bool wait = false;
-	while (!wait) {
-		std::cout << ".";
-		 wait = tmpManager->getSwitch(2);
-		 usleep(1000000);
-	}
+    //std::cout << "waiting for run switch" << std::endl;
+    //bool wait = false;
+	//while (!wait) {
+	//	std::cout << ".";
+	//	 wait = tmpManager->getSwitch(2);
+	//	 usleep(1000000);
+	//}
 	
 	
 	bool run = true;
@@ -65,26 +66,41 @@ int main(int argC, char *argV[]){
 				camera.refresh(BALL);
 				camera.where(target);
 				if (camera.isPall) {
-					std::cout << "b " << camera.dir << " "<< camera.widthImg;
+					std::cout << "b " << camera.dir;
 					switch (camera.dir) { //ball detected
 						case FORWARD:
-						std::cout << "f ";
-							//std::cout << "bforward" << std::endl;
-							if (camera.largestB.y > (camera.heightImg/3)) {
-								manager->moveRobot(0, 50, 0);
+							std::cout << "f ";
+							/*if (camera.largestB.y < (camera.heightImg/4)) {
+								std::cout << "f ";
+							} else if (camera.largestB.y < (camera.heightImg/2)) {
+								std::cout << "lf ";
+							} else if (camera.largestB.y < (camera.heightImg*0.75)) {
+								std::cout << "c ";
 							} else {
+								std::cout << "wc ";
+							}*/
+							
+							
+							//std::cout << "bforward" << std::endl;
+							if (camera.largestB.y < (camera.heightImg/2)) {
 								manager->moveRobot(0, 100, 0);
 								std::cout << "f ";
+							} else if (camera.largestB.y < (camera.heightImg*0.75)) {
+								manager->moveRobot(0, 40, 0);
+								std::cout << "m ";
+							} else {
+								manager->moveRobot(0, 30, 0);
+								std::cout << "c ";
 							}
 							break;
 						case LEFT:
 						std::cout << "l ";
 							//std::cout << "bleft" << std::endl;
 							timeout = 0;
-							if ((camera.widthImg - camera.largestB.x) < 20) { // correct course when moving forward
-								if (camera.largestB.y < (camera.heightImg/4)) {
-									//manager->moveRobot(0, 100, 30);
-									manager->setSpeeds(80, -10, 80);
+							/*if ((camera.widthImg - camera.largestB.x) < 20) { // correct course when moving forward
+								if (camera.largestB.y < (camera.heightImg/3)) {
+									manager->moveRobot(0, 100, 10);
+									//manager->setSpeeds(80, -10, 80);
 									std::cout << "f ";
 								} else {
 									manager->moveRobot(0, 0, -10);
@@ -94,15 +110,30 @@ int main(int argC, char *argV[]){
 							} else {
 								manager->moveRobot(0, 0, -20);
 							}
+							*/
+							if (camera.largestB.y < (camera.heightImg/2)) {
+								int turn = (camera.largestB.x - camera.widthImg)/-30;
+								manager->moveRobot(0, 50, turn);
+								std::cout << "f " << turn << " ";
+							} else if (camera.largestB.y < (camera.heightImg*0.75)) {
+								int turn = (camera.largestB.x - camera.widthImg)/-20;
+								manager->moveRobot(0, 50, turn);
+								std::cout << "m " << turn << " ";
+							} else {
+								int turn = (camera.largestB.x - camera.widthImg)/-15;
+								manager->moveRobot(0, 0, turn);
+								std::cout << "c " << turn << " ";
+							}
+							
 							break;
 						case RIGHT:
 							std::cout << "r ";
 							//std::cout << "bright" << std::endl;
 							timeout = 0;
-							if ((camera.largestB.x - camera.widthImg) < 20) {
-								if (camera.largestB.y < (camera.heightImg/4)) {
-									//manager->moveRobot(0, 100, -30);
-									manager->setSpeeds(80, 10, 80);
+							/*if ((camera.largestB.x - camera.widthImg) < 20) {
+								if (camera.largestB.y < (camera.heightImg/3)) {
+									manager->moveRobot(0, 100, -10);
+									//manager->setSpeeds(80, 10, 80);
 									std::cout << "f ";
 								} else {
 									manager->moveRobot(0, 0, 10);
@@ -111,13 +142,30 @@ int main(int argC, char *argV[]){
 								manager->moveRobot(0, 0, 10);
 							} else {
 								manager->moveRobot(0, 0, 20);
+							}*/
+							if (camera.largestB.y < (camera.heightImg/2)) {
+								int turn = -(camera.largestB.x - camera.widthImg )/15;
+								manager->moveRobot(0, 100, turn);
+								std::cout << "f " << turn << " ";
+							} else if (camera.largestB.y < (camera.heightImg*0.75)) {
+								int turn = -(camera.largestB.x - camera.widthImg )/8;
+								manager->moveRobot(0, 50, turn);
+								std::cout << "m " << turn << " ";
+							} else {
+								int turn = -(camera.largestB.x - camera.widthImg)/15;
+								manager->moveRobot(0, 0, turn);
+								std::cout << "c " << turn << " ";
 							}
+							
 							break;
 						case STOP:
 							std::cout << "bstop" << std::endl;
 							int moveToBall = 0;
 							manager->moveRobot(0, 20, 0);
 							while (moveToBall < 20) {
+								//bool meh =camera.isBallForward();
+								//if (meh) std::cout << "ball in the way" << std::endl;
+								//else std::cout << "ball not in the way" << std::endl;
 								moveToBall += 1;
 								if (!tmpManager->getSwitch(1)) {// check if ball in dribbler
 									std::cout << "ball in dribbler" << std::endl;
@@ -183,6 +231,8 @@ int main(int argC, char *argV[]){
 							manager->moveRobot(0, 0, 0);
 							if (!movingCloserToGoal) {
 								manager->shootCoil();
+								if (!tmpManager->getSwitch(1)) manager->shootCoilLong(); 
+								if (!tmpManager->getSwitch(1)) manager->shootCoilLong();
 							} else std::cout << "noshoot, just moving" << std::endl;
 							movingCloserToGoal = false;
 							if (target==BALL) target=GOAL;
@@ -211,7 +261,7 @@ int main(int argC, char *argV[]){
 			if (!tmpManager->getSwitch(2)) {
 				manager->moveRobot(0, 0, 0);
 				std::cout<< std::endl << "code paused, waitng for input" << std::endl;
-				wait = false;
+				bool wait = false;
 				while (!wait) {
 					std::cout << ".";
 					usleep(100000);

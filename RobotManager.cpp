@@ -66,6 +66,10 @@ void RobotManager::shootCoil() {
 	if (hasSerial) sCoil(coilPort);
 }
 
+void RobotManager::shootCoilLong() {
+	if (hasSerial) sCoilLong(coilPort);
+}
+
 void RobotManager::moveRobot(float angle, float speed, int rotSpd) {
 	if (iter < MAXITER) iter += 1;
 	else checkSpeeds();
@@ -98,6 +102,22 @@ void RobotManager::moveRobot(float angle, float speed, int rotSpd) {
 	//}
 }
 
+
+
+void RobotManager::setSpeeds(int spd1, int spd2, int spd3) {
+	if (hasSerial) {
+		if (alterEng) {
+			setSpeedForEng(engines[0], spd1);
+			setSpeedForEng(engines[1], spd2);
+			setSpeedForEng(engines[2], spd3);
+		} else {
+			setSpeedForEng(engines[1], spd2);
+			setSpeedForEng(engines[0], spd1);
+			setSpeedForEng(engines[2], spd3);
+		}
+		alterEng = !alterEng;
+    }
+}
 
 void RobotManager::checkSpeeds() {
 	if (hasSerial) {
