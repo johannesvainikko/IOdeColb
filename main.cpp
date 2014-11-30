@@ -41,6 +41,8 @@ int main(int argC, char *argV[]){
     int ballTimeout = 0;
     bool movingCloserToGoal = false;
     
+    bool driblerCheck = true;
+    
     
     
 	int checkSwitch = 30;
@@ -63,6 +65,14 @@ int main(int argC, char *argV[]){
 		while(search){
 			camera.capFrame();
 			if (target == BALL) {
+				
+				if (driblerCheck) {
+					manager->sendSwitch(1);
+				} else {
+					if (!manager->readSwitch(1)) target = GOAL;
+				}
+				driblerCheck = !driblerCheck;
+				
 				camera.refresh(BALL);
 				camera.where(target);
 				if (camera.isPall) {
