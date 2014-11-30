@@ -41,7 +41,7 @@ int main(int argC, char *argV[]){
     int ballTimeout = 0;
     bool movingCloserToGoal = false;
     
-    bool driblerCheck = true;
+    //bool driblerCheck = false;
     
     
     
@@ -66,12 +66,12 @@ int main(int argC, char *argV[]){
 			camera.capFrame();
 			if (target == BALL) {
 				
-				if (driblerCheck) {
-					manager->sendSwitch(1);
-				} else {
-					if (!manager->readSwitch(1)) target = GOAL;
-				}
-				driblerCheck = !driblerCheck;
+				//if (driblerCheck) {
+				//	manager->sendSwitch(1);
+				//} else {
+				//	if (!manager->readSwitch(1)) target = GOAL;
+				//}
+				//driblerCheck = !driblerCheck;
 				
 				camera.refresh(BALL);
 				camera.where(target);
@@ -295,6 +295,10 @@ int main(int argC, char *argV[]){
 					goalColor = YELLOW;
 					//manager->moveRobot(0, 0, -10);
 				}
+			}
+			
+			if (target == BALL) {
+				if (!manager->getSwitch(1)) target = GOAL;
 			}
 		}
 		//std::cout << "bto " <<ballTimeout << std::endl;
