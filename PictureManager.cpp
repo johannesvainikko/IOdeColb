@@ -1,5 +1,6 @@
 #include "PictureManager.hpp"
 #include <string>
+#include <unistd.h>
 
 void PictureManager::init(RobotManager *manager){
     cap.open(0); //avab suhtluse kaameraga
@@ -63,7 +64,7 @@ void PictureManager::where(int f){ //palli või värava asukoht kaadri keskkoha 
     if((widthImg-dev)<(largestObject.x)){
         if ((largestObject.x)<(widthImg+dev)) {
 			//
-            if (((f==BALL)&&(largestObject.y > 450))||((f==GOAL)&&(largestObject.y+largestObject.rect.height > maxGoalDist))) {
+            if (((f==BALL)&&(largestObject.y > 420))||((f==GOAL)&&(largestObject.y+largestObject.rect.height > maxGoalDist))) {
                 // stop, ball/gate found
                 dir=STOP;
             }
@@ -356,10 +357,12 @@ void PictureManager::objectSort(int f){ //värava leidmine eeldusel et suurima a
         }
     }
     else{
+		bool temp = wasBall;
 		refresh(YELLOW);
         if (!isGoal) {
             refresh(BLUE);
         }
+        wasBall=temp;
         isGoal=false;
         for (int i=0; i<(*contours).size(); i++) {
             mu[i]=cv::moments((*contours)[i],false);
@@ -404,23 +407,59 @@ void PictureManager::largest(int f){ //suurim objekt
     }
     Object tyhi = Object(0,0,0);
     
-    wasBall=false;
-    if ((f==BALL)&&wasBall) {
-        for (int i=0; i<(*objects).size(); i++) {
+    //wasBall = false;
+   // if ((f==BALL)&&wasBall) {
+		
+		//std::cout << "  " << (*objects).size() << "  ";
+		
+		/*for (int i=0; i<(*objects).size(); i++) {
+			if (((*objects)[i].y) > (lastBall.y + kDeviationY)) { // closer than last selected ball
+				if (tyhi.y > ((*objects)[i].y)) { // in case of multiple closer objects
+					tyhi=(*objects)[i];
+				}
+			} else if (((*objects)[i].y) > (lastBall.y - kDeviationY)) { // probably last ball, if not then close to it
+				if ((((*objects)[i].x) > (lastBall.x + kDeviationX)) && (((*objects)[i].x) > (lastBall.x - kDeviationX))) {	// filter out if x too big
+					if (tyhi.y != 0) tyhi=(*objects)[i]; 	// no ignoring closer objects
+				}
+			}
+		*/
+		
+		
+		
+        /*for (int i=0; i<(*objects).size(); i++) {
             if ((lastBall.x+deviation)>((*objects)[i].x)) {
                 if (((*objects)[i].x)>(lastBall.x-deviation)) {
                     tyhi=(*objects)[i];
                 }
             }
-        }
-    }
-    else{
+        }*/
+        
+		//}
+    //}
+   // else{
         for (int i=0; i<(*objects).size(); i++) {
             if ((*objects)[i].suurus>tyhi.suurus) {
                 tyhi=(*objects)[i];
             }
         }
+		if(wasBall){
+			int deviation = 750;
+			for (int i=0; i<(pallid.size()); i++){
+				if((pallid[i].suurus)+deviation>tyhi.suurus){
+					if(pallid[i].x<tyhi.x){
+						tyhi=pallid[i];
+						}
+					}
+				}
+			//}
     }
+    if (f == BALL) {
+		lastBall = tyhi;
+		wasBall=true;
+	}
+	else {
+		wasBall=false;
+	}
     /*if (f==BALL) {
         if ((*objects).size() > 0) wasBall=true;
         else wasBall = false;
@@ -466,12 +505,16 @@ void PictureManager::fieldmask(){
 }
 
 bool PictureManager::isBallForward(){
+	cap >> frame;
     refresh(BALL);
     isPall=false;
     if((widthImg-DEV)<(largestB.x)){
         if ((largestB.x)<(widthImg+DEV)) {
+			if ((largestB.y)<(heightImg-20)) {
+			
             return true;
             
+			}
         }
     }
     return false;
